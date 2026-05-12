@@ -1,0 +1,16 @@
+# $schema: https://ollama-claude.dev/schema/profile-v1.json
+# The baseline profile. Everything inherits from this.
+
+name        = "default"
+description = "Sensible defaults: tier autopilot, local-only, no telemetry"
+
+[active]
+profile = "default"
+
+[install]
+auto_pull         = true
+forbid_cloud      = false
+require_project_toml = false
+
+[topology]
+default = "same"

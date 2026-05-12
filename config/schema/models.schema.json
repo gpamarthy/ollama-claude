@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ollama-claude.dev/schema/models-v1.json",
+  "title": "ollama-claude models.toml",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "tier": {
+      "type": "object",
+      "patternProperties": {
+        "^(cpu|low|mid|high|workstation)$": {
+          "type": "object",
+          "properties": {
+            "fast":  { "type": "string" },
+            "tools": { "type": "string" },
+            "heavy": { "type": "string" }
+          },
+          "required": ["fast", "tools", "heavy"]
+        }
+      }
+    },
+    "fallback": {
+      "type": "object",
+      "properties": {
+        "tag": { "type": "string" }
+      },
+      "required": ["tag"]
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name":           { "type": "string" },
+          "supports_tools": { "type": "boolean" },
+          "context_safe":   { "type": "integer" }
+        }
+      }
+    }
+  }
+}

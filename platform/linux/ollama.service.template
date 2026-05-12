@@ -1,0 +1,37 @@
+[Unit]
+Description=Ollama Service (managed by ollama-claude)
+Documentation=https://github.com/gpamarthy/ollama-claude
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=__OLLAMA_USER__
+Group=__OLLAMA_GROUP__
+ExecStartPre=/bin/sh -c '__GPU_WAIT__'
+ExecStart=/usr/local/bin/ollama serve
+Restart=on-failure
+RestartSec=5s
+
+# Environment — rendered by oc install based on topology and HW detection.
+Environment=OLLAMA_HOST=__OLLAMA_HOST__
+Environment=OLLAMA_NUM_CTX=__OLLAMA_NUM_CTX__
+Environment=OLLAMA_KV_CACHE_TYPE=__OLLAMA_KV_CACHE_TYPE__
+Environment=OLLAMA_FLASH_ATTENTION=__OLLAMA_FLASH_ATTENTION__
+Environment=OLLAMA_KEEP_ALIVE=__OLLAMA_KEEP_ALIVE__
+Environment=OLLAMA_MAX_LOADED_MODELS=__OLLAMA_MAX_LOADED_MODELS__
+Environment=OLLAMA_NUM_PARALLEL=__OLLAMA_NUM_PARALLEL__
+Environment=OLLAMA_DEBUG=0
+__OLLAMA_ORIGINS_LINE__
+__HSA_OVERRIDE_LINE__
+
+# Tighten: ollama-claude never writes OLLAMA_ORIGINS=*; only scoped origins.
+# Tighten: OLLAMA_TELEMETRY is not set (ollama-claude itself sends nothing).
+
+WorkingDirectory=/var/lib/ollama
+ProtectSystem=full
+ProtectHome=read-only
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

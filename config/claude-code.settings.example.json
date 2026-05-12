@@ -1,0 +1,15 @@
+{
+  "$comment": "Example Claude Code settings.json that routes through local Ollama. Copy to ~/.config/claude/settings.json or merge with existing settings. The env block is honoured by Claude Code as of 2026; the model and base URL are picked up at startup.",
+
+  "env": {
+    "ANTHROPIC_BASE_URL": "http://127.0.0.1:11434",
+    "ANTHROPIC_AUTH_TOKEN": "ollama"
+  },
+
+  "$note_attribution_header": "Uncomment the line below if you experience prefix-cache misses caused by Claude Code's per-request attribution header. Tracked in docs/CLAUDE_CODE.md.",
+  "$disabled_setting": {
+    "env": {
+      "CLAUDE_CODE_ATTRIBUTION_HEADER": "0"
+    }
+  }
+}

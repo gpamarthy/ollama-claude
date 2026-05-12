@@ -1,0 +1,85 @@
+# $schema: https://ollama-claude.dev/schema/models-v1.json
+#
+# Default tier -> role -> ollama tag map.
+# Resolver verifies each tag against the registry via `ollama show <tag>`
+# before pulling. On a miss it walks one tier down. The "" value means
+# "explicitly skip this role on this tier" (cpu tier heavy is empty).
+
+[tier.cpu]
+fast  = "llama3.2:3b"
+tools = "qwen3:8b"
+heavy = ""
+
+[tier.low]
+fast  = "llama3.2:3b"
+tools = "qwen3:8b"
+heavy = "qwen2.5-coder:7b"
+
+[tier.mid]
+fast  = "qwen3:8b"
+tools = "qwen3:14b"
+heavy = "qwen2.5-coder:14b"
+
+[tier.high]
+fast  = "qwen3:8b"
+tools = "qwen3:14b"
+heavy = "qwen2.5-coder:32b"
+
+[tier.workstation]
+fast  = "qwen3:8b"
+tools = "qwen3:30b"
+heavy = "qwen3.6:27b"
+
+# Always-available last-resort fallback.
+[fallback]
+tag = "llama3.2:3b"
+
+# Per-tag metadata: tool support and safe context window.
+# Used by the resolver to refuse routing tools-role calls to a model
+# that doesn't actually support tool calling, and to cap requested
+# context at a size the model handles well in practice.
+
+[[tags]]
+name           = "llama3.2:3b"
+supports_tools = false
+context_safe   = 8192
+
+[[tags]]
+name           = "qwen3:8b"
+supports_tools = true
+context_safe   = 32768
+
+[[tags]]
+name           = "qwen3:14b"
+supports_tools = true
+context_safe   = 32768
+
+[[tags]]
+name           = "qwen3:30b"
+supports_tools = true
+context_safe   = 32768
+
+[[tags]]
+name           = "qwen3.6:27b"
+supports_tools = true
+context_safe   = 65536
+
+[[tags]]
+name           = "qwen2.5-coder:7b"
+supports_tools = false
+context_safe   = 32768
+
+[[tags]]
+name           = "qwen2.5-coder:14b"
+supports_tools = false
+context_safe   = 32768
+
+[[tags]]
+name           = "qwen2.5-coder:32b"
+supports_tools = false
+context_safe   = 32768
+
+[[tags]]
+name           = "tinyllama:1.1b"
+supports_tools = false
+context_safe   = 2048

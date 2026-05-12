@@ -1,0 +1,106 @@
+#!/bin/sh
+# ollama-claude dispatcher. Routes subcommands to bin/lib/<cmd>.sh.
+
+set -eu
+
+OC_VERSION="0.1.0-dev"
+
+# Resolve our own location so subcommands can find lib/ and config/.
+# Handle symlinks (the installer puts oc in ~/.local/bin pointing at a
+# versioned dir under ~/.local/share/ollama-claude/).
+_oc_self() {
+  # Prefer readlink -f when available; otherwise fall back to pwd dance.
+  if command -v readlink >/dev/null 2>&1; then
+    target=$(readlink "$1" 2>/dev/null || true)
+    if [ -n "$target" ]; then
+      case "$target" in
+        /*) printf '%s' "$target" ;;
+        *)  printf '%s/%s' "$(dirname "$1")" "$target" ;;
+      esac
+      return
+    fi
+  fi
+  printf '%s' "$1"
+}
+
+_self=$(_oc_self "$0")
+OC_BIN_DIR=$(cd "$(dirname "$_self")" && pwd)
+OC_PROJECT_ROOT=$(cd "$OC_BIN_DIR/.." && pwd)
+OC_LIB_DIR="$OC_PROJECT_ROOT/lib"
+export OC_VERSION OC_BIN_DIR OC_PROJECT_ROOT OC_LIB_DIR
+
+# shellcheck source=../lib/log.sh
+. "$OC_LIB_DIR/log.sh"
+
+usage() {
+  cat <<'EOF'
+ollama-claude — hardware-aware bridge between Ollama and Claude Code
+
+USAGE
+  oc <command> [options]
+
+COMMANDS
+  install         Detect hardware, install Ollama, pull tier models, configure
+  init            Interactive 3-question wizard; writes .ollama-claude.toml
+  sync            Apply current project .ollama-claude.toml on top of global config
+  status          Health, models, topology, wire-up state, switch state
+  doctor          End-to-end probe with per-role inference smoke test
+  models          List or override the role->tag map
+  topology        Switch between same / split-host / split-client
+  switch          Flip Claude Code between local and cloud (oc switch local|cloud)
+  wire-up         Inject env-source into shell rc (--claude-settings for settings.json)
+  claude-hooks    Install / remove Claude Code session-backend audit hook
+  benchmark       Calibrate the detected tier with tinyllama prompts
+  self-update     Fetch + verify a newer release
+  uninstall       Remove service + configs (--purge for models)
+  version         Print version
+
+GLOBAL FLAGS
+  -v, --verbose   Enable debug logging (sets OC_VERBOSE=1)
+  -q, --quiet     Suppress info/ok lines (sets OC_QUIET=1)
+  -h, --help      Show this help
+
+See `oc <command> --help` for command-specific options.
+EOF
+}
+
+# Parse global flags
+while [ $# -gt 0 ]; do
+  case "$1" in
+    -v|--verbose) export OC_VERBOSE=1; shift ;;
+    -q|--quiet)   export OC_QUIET=1; shift ;;
+    -h|--help)    usage; exit 0 ;;
+    --)           shift; break ;;
+    -*)           oc_log error "unknown global flag: $1"; usage >&2; exit 2 ;;
+    *)            break ;;
+  esac
+done
+
+if [ $# -eq 0 ]; then
+  usage
+  exit 0
+fi
+
+cmd="$1"
+shift
+
+cmd_script="$OC_BIN_DIR/lib/$cmd.sh"
+if [ ! -r "$cmd_script" ]; then
+  oc_log error "unknown command: $cmd"
+  usage >&2
+  exit 2
+fi
+
+# shellcheck source=lib/install.sh
+. "$cmd_script"
+
+# Each subcommand defines `oc_cmd_<name>` as its entry function.
+fn="oc_cmd_$cmd"
+# Replace dashes in command names with underscores for the function name
+fn=$(printf '%s' "$fn" | tr '-' '_')
+
+if ! command -v "$fn" >/dev/null 2>&1; then
+  oc_die "subcommand $cmd is missing its entry function ($fn)"
+fi
+
+"$fn" "$@"

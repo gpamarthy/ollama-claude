@@ -1,0 +1,17 @@
+# $schema: https://ollama-claude.dev/schema/profile-v1.json
+# CPU-only friendly. Pull only the `fast` role to keep disk footprint
+# small and inference responsive on low-end hardware.
+
+name        = "minimalist"
+description = "Only the fast role; skip tools and heavy"
+
+[install]
+auto_pull         = true
+forbid_cloud      = false
+require_project_toml = false
+
+[topology]
+default = "same"
+
+[overrides]
+skip_roles = ["tools", "heavy"]

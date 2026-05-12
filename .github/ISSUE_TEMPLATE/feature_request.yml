@@ -1,0 +1,35 @@
+name: Feature request
+description: Suggest an addition or improvement
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve
+      description: Describe the workflow that doesn't work today.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: One or two paragraphs. Not a full design — that comes later.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What else you tried or thought about.
+
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope check
+      description: We deliberately stay out of some areas.
+      options:
+        - label: This isn't a GUI request (LM Studio / Jan own that ground)
+        - label: This isn't a containerization request (ramalama owns that)
+        - label: This isn't telemetry / phone-home (we will never add that)

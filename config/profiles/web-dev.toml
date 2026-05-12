@@ -1,0 +1,17 @@
+# $schema: https://ollama-claude.dev/schema/profile-v1.json
+# Web dev: keep VRAM headroom for browser + node. Demote heavy role one
+# tier so the user can keep a hot browser window and a dev server.
+
+name        = "web-dev"
+description = "Smaller heavy model so browser + node have headroom"
+
+[install]
+auto_pull         = true
+forbid_cloud      = false
+require_project_toml = false
+
+[topology]
+default = "same"
+
+[overrides.heavy]
+tier_demote = 1

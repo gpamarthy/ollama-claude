@@ -1,0 +1,45 @@
+# $schema: https://ollama-claude.dev/schema/amd-overrides-v1.json
+#
+# Known AMD consumer GPUs that need HSA_OVERRIDE_GFX_VERSION to work with
+# ROCm/Ollama. The detector matches on a chip identifier from
+# `rocm-smi --showproductname` or `lspci -nn`, and ollama-claude sets the
+# matching override in the systemd unit / user env.
+#
+# When a chip is not in this table the installer warns and points at
+# https://github.com/ollama/ollama/blob/main/docs/gpu.md so the user can
+# self-research, then offers CPU fallback.
+
+# RDNA 2 consumer cards — not officially supported by ROCm. The 10.3.0
+# override pretends to be a Navi 21 (RX 6800/6900/6950 XT) which is the
+# closest supported lineage.
+[[chip]]
+match    = "Navi 22"          # 6700 XT, 6750 XT
+override = "10.3.0"
+
+[[chip]]
+match    = "Navi 23"          # 6600, 6600 XT, 6650 XT
+override = "10.3.0"
+
+[[chip]]
+match    = "Navi 24"          # 6400, 6500 XT
+override = "10.3.0"
+
+# RDNA 3 consumer cards — most are now officially supported, but the
+# lower-end 7600 still benefits from an override on older ROCm.
+[[chip]]
+match    = "Navi 33"          # 7600, 7600 XT
+override = "11.0.0"
+
+# RDNA 3.5 mobile / APU — Phoenix / Hawk Point integrated graphics
+[[chip]]
+match    = "Phoenix"
+override = "11.0.2"
+
+[[chip]]
+match    = "Hawk Point"
+override = "11.0.2"
+
+# Strix Point APU
+[[chip]]
+match    = "Strix"
+override = "11.5.1"

@@ -1,0 +1,45 @@
+name: release
+
+on:
+  push:
+    tags: ['v*.*.*']
+
+permissions:
+  contents: write   # for creating the release
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Determine version
+        id: v
+        run: echo "version=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+
+      - name: Build tarball
+        run: |
+          v="${{ steps.v.outputs.version }}"
+          stage="ollama-claude-$v"
+          mkdir -p "build/$stage"
+          # ship everything except dev/test scaffolding
+          rsync -a --exclude '.git' --exclude '.github' --exclude 'tests' \
+                --exclude 'build' --exclude 'dist' \
+                ./ "build/$stage/"
+          (cd build && tar -czf "ollama-claude-$v.tar.gz" "$stage")
+          mkdir -p dist && mv "build/ollama-claude-$v.tar.gz" dist/
+
+      - name: SHA256SUMS
+        run: |
+          cd dist
+          sha256sum *.tar.gz > SHA256SUMS
+          cat SHA256SUMS
+
+      - name: GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/ollama-claude-${{ steps.v.outputs.version }}.tar.gz
+            dist/SHA256SUMS
+          generate_release_notes: true
+          draft: true

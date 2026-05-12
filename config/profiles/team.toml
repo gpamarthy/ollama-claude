@@ -1,0 +1,15 @@
+# $schema: https://ollama-claude.dev/schema/profile-v1.json
+# Team mode: refuses to install unless `.ollama-claude.toml` is present
+# in the current project. Bootstrap with `oc init --profile team`, which
+# creates the project file and activates this profile in one shot.
+
+name        = "team"
+description = "Strict reproducibility: require .ollama-claude.toml in repo root"
+
+[install]
+auto_pull         = true
+forbid_cloud      = false
+require_project_toml = true
+
+[topology]
+default = "same"

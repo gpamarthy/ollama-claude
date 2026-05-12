@@ -1,0 +1,27 @@
+# $schema: https://ollama-claude.dev/schema/topology-v1.json
+#
+# Topology presets. `oc install --topology <name>` selects one. The
+# active topology is persisted to ~/.config/ollama-claude/topology so
+# re-runs and `oc status` stay coherent.
+
+[same]
+description = "Ollama and Claude Code on the same machine"
+host        = "127.0.0.1:11434"
+origins     = ""                # never set OLLAMA_ORIGINS for same-machine
+firewall    = false
+installs_ollama = true
+
+[split-host]
+description = "Ollama runs on this host; clients (e.g. a VM) connect over the LAN"
+host        = "0.0.0.0:11434"   # bound on the interface owning --allow-from
+origins     = ""                # OLLAMA_ORIGINS=* is forbidden; we set scoped origins or none
+firewall    = true              # requires --allow-from CIDR; refuses otherwise
+installs_ollama = true
+
+[split-client]
+description = "Claude Code on this machine; Ollama runs elsewhere"
+host        = ""                # not bound here
+origins     = ""
+firewall    = false
+installs_ollama = false         # only writes claude-code.env; runs connectivity probe
+requires_host_arg = true        # --host <ip-or-name> required

@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ollama-claude.dev/schema/config-v1.json",
+  "title": "ollama-claude config",
+  "description": "Schema for ~/.config/ollama-claude/config.toml and .ollama-claude.toml",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "active": {
+      "type": "object",
+      "properties": {
+        "profile": { "type": "string" }
+      }
+    },
+    "install": {
+      "type": "object",
+      "properties": {
+        "auto_pull": { "type": "boolean" },
+        "forbid_cloud": { "type": "boolean" },
+        "require_project_toml": { "type": "boolean" }
+      }
+    },
+    "topology": {
+      "type": "object",
+      "properties": {
+        "default": {
+          "type": "string",
+          "enum": ["same", "split-host", "split-client"]
+        },
+        "host": { "type": "string" },
+        "allow_from": { "type": "string", "description": "CIDR for split-host" }
+      }
+    },
+    "roles": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-z][a-z0-9_-]*$": {
+          "type": "object",
+          "properties": {
+            "description": { "type": "string" },
+            "context": { "type": "integer", "minimum": 512 },
+            "prefer": { "type": "string", "enum": ["local", "cloud", "auto"] }
+          }
+        }
+      }
+    },
+    "models": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "provider", "roles"],
+        "properties": {
+          "name":           { "type": "string" },
+          "provider":       { "type": "string", "enum": ["ollama", "anthropic"] },
+          "roles":          { "type": "array", "items": { "type": "string" } },
+          "supports_tools": { "type": "boolean" },
+          "context_safe":   { "type": "integer", "minimum": 512 },
+          "digest":         { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+          "when":           { "type": "string", "enum": ["primary", "fallback"] }
+        }
+      }
+    },
+    "overrides": {
+      "type": "object",
+      "properties": {
+        "skip_roles": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "prompts": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "claude_hooks": {
+      "type": "object",
+      "properties": {
+        "install_default": { "type": "boolean" }
+      }
+    }
+  }
+}

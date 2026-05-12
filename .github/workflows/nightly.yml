@@ -1,0 +1,54 @@
+name: nightly
+
+on:
+  schedule:
+    - cron: '17 4 * * *'   # 04:17 UTC every day
+  workflow_dispatch:
+
+jobs:
+  property:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: chmod +x bin/oc tests/property/render_invariants.sh
+      - run: make property
+
+  simulation:
+    name: simulation (${{ matrix.distro }})
+    strategy:
+      fail-fast: false
+      matrix:
+        distro:
+          - ubuntu:22.04
+          - ubuntu:24.04
+          - fedora:40
+          - alpine:3.20
+          - debian:12
+    runs-on: ubuntu-latest
+    container: ${{ matrix.distro }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install prerequisites
+        run: |
+          case "${{ matrix.distro }}" in
+            ubuntu*|debian*) apt-get update -qq && apt-get install -y curl git make bats ;;
+            fedora*)         dnf install -y curl git make bats ;;
+            alpine*)         apk add --no-cache curl git make bats bash ;;
+          esac
+      - run: chmod +x install.sh bin/oc
+      - run: bash tests/integration/smoke.sh
+
+  ollama-integration-full:
+    name: integration with real Ollama (opt-in)
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Ollama
+        run: curl -fsSL https://ollama.com/install.sh | sh
+      - name: Pull tinyllama
+        run: ollama pull tinyllama:1.1b
+      - name: Run integration
+        run: OC_INTEGRATION_FULL=1 bash tests/integration/smoke.sh
+      - name: Tool-call probe
+        run: bash tests/integration/tool_call_probe.sh tinyllama:1.1b || true

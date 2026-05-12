@@ -1,0 +1,50 @@
+# $schema: https://ollama-claude.dev/schema/tiers-v1.json
+#
+# Hardware tier definitions. Each tier specifies the VRAM band, the
+# minimum total RAM gate, and the expected tokens-per-second band for
+# calibration via `oc benchmark`.
+
+[tier.cpu]
+description = "No GPU or under 4 GB usable VRAM"
+vram_min_gb = 0
+vram_max_gb = 4
+ram_min_gb  = 0
+expected_tps_min = 1
+expected_tps_max = 8
+
+[tier.low]
+description = "4-8 GB VRAM, ≥ 8 GB RAM"
+vram_min_gb = 4
+vram_max_gb = 8
+ram_min_gb  = 8
+expected_tps_min = 8
+expected_tps_max = 30
+
+[tier.mid]
+description = "8-16 GB VRAM, ≥ 16 GB RAM"
+vram_min_gb = 8
+vram_max_gb = 16
+ram_min_gb  = 16
+expected_tps_min = 25
+expected_tps_max = 60
+
+[tier.high]
+description = "16-24 GB VRAM, ≥ 24 GB RAM"
+vram_min_gb = 16
+vram_max_gb = 24
+ram_min_gb  = 24
+expected_tps_min = 40
+expected_tps_max = 90
+
+[tier.workstation]
+description = "24 GB+ VRAM, ≥ 32 GB RAM"
+vram_min_gb = 24
+vram_max_gb = 9999
+ram_min_gb  = 32
+expected_tps_min = 60
+expected_tps_max = 200
+
+# Apple Silicon uses unified memory: effective_vram = total_ram_gb * 0.75
+[apple]
+unified_memory_ratio = 0.75
+fanless_models = ["MacBookAir"]    # detected via system_profiler SPHardwareDataType

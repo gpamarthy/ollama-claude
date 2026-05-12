@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.ollama-claude.ollama</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/usr/local/bin/ollama</string>
+    <string>serve</string>
+  </array>
+
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>OLLAMA_HOST</key>
+    <string>__OLLAMA_HOST__</string>
+    <key>OLLAMA_NUM_CTX</key>
+    <string>__OLLAMA_NUM_CTX__</string>
+    <key>OLLAMA_KV_CACHE_TYPE</key>
+    <string>__OLLAMA_KV_CACHE_TYPE__</string>
+    <key>OLLAMA_FLASH_ATTENTION</key>
+    <string>__OLLAMA_FLASH_ATTENTION__</string>
+    <key>OLLAMA_KEEP_ALIVE</key>
+    <string>__OLLAMA_KEEP_ALIVE__</string>
+    <key>OLLAMA_MAX_LOADED_MODELS</key>
+    <string>__OLLAMA_MAX_LOADED_MODELS__</string>
+    <key>OLLAMA_NUM_PARALLEL</key>
+    <string>__OLLAMA_NUM_PARALLEL__</string>
+  </dict>
+
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+
+  <key>StandardOutPath</key>
+  <string>/usr/local/var/log/ollama/stdout.log</string>
+  <key>StandardErrorPath</key>
+  <string>/usr/local/var/log/ollama/stderr.log</string>
+</dict>
+</plist>

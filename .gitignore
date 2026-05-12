@@ -1,0 +1,36 @@
+# Build artefacts
+dist/
+build/
+*.tar.gz
+*.zip
+SHA256SUMS
+SHA256SUMS.sig
+
+# Test output
+tests/.bats-tmp/
+tests/integration/.cache/
+.test-state/
+
+# Local development
+.envrc
+.direnv/
+.vscode/settings.json
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor backups
+*.swp
+*.swo
+*~
+
+# State that should never be committed
+*.local
+*.local.toml
+
+# Go (Phase 2)
+ollama-claude
+ollama-claude.exe
+*.exe

@@ -1,0 +1,73 @@
+name: Bug report
+description: Something doesn't work the way it should
+labels: [bug, needs-triage]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: A short description of the problem.
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: Commands you ran, in order.
+      placeholder: |
+        oc install
+        oc doctor
+    validations:
+      required: true
+
+  - type: textarea
+    id: oc-version
+    attributes:
+      label: oc version
+      description: Output of `oc version` (paste verbatim).
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: oc-status
+    attributes:
+      label: oc status
+      description: Output of `oc status` (paste verbatim).
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: oc-doctor
+    attributes:
+      label: oc doctor --verbose
+      description: First 100 lines of `oc doctor --verbose 2>&1 | head -100`
+      render: shell
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: OS and version
+      placeholder: 'Ubuntu 24.04 / macOS 14.5 / Windows 11 23H2 / WSL2 inside Win11'
+    validations:
+      required: true
+
+  - type: input
+    id: hw
+    attributes:
+      label: Hardware
+      placeholder: 'RTX 4070, 32 GB RAM / M3 Pro 18 GB / CPU only (AMD Ryzen 7)'
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Confirmations
+      options:
+        - label: I've searched existing issues
+          required: true
+        - label: I've read docs/TROUBLESHOOTING.md
+          required: true

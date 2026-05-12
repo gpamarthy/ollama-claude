@@ -1,0 +1,16 @@
+# $schema: https://ollama-claude.dev/schema/profile-v1.json
+# Notebook-friendly: large context for tools role, opt-in cloud.
+
+name        = "data-science"
+description = "Larger tool-role context for long notebook flows"
+
+[install]
+auto_pull         = true
+forbid_cloud      = false
+require_project_toml = false
+
+[topology]
+default = "same"
+
+[roles.tools]
+context = 32768
