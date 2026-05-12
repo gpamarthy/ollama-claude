@@ -4,7 +4,7 @@
 
 ## Promises
 
-- **No telemetry.** Not opt-in, not opt-out — none. No phone-home, no anonymous stats, no crash uploads.
+- **No telemetry.** Not opt-in, not opt-out - none. No phone-home, no anonymous stats, no crash uploads.
 - **No silent network calls.** The installer fetches a tarball + checksum at install time, and afterwards `oc self-update` will fetch newer releases on demand. Nothing else.
 - **No silent dotfile edits.** `oc wire-up` is the only path that touches shell rc files. `oc wire-up --claude-settings` is the only path that touches `~/.config/claude/settings.json`. Neither runs automatically.
 - **`OLLAMA_HOST` defaults to loopback.** `127.0.0.1:11434`. The only path that binds on a non-loopback interface is `--topology split-host`, which refuses to run without an explicit `--allow-from CIDR`.
@@ -46,7 +46,7 @@ See [SECURITY.md](../SECURITY.md). Do not file public issues for security proble
 
 ## Audit log
 
-`oc claude-hooks install` installs an opt-in Claude Code session hook that logs which backend (local, cloud, custom) each session used to `~/.local/state/ollama-claude/sessions.jsonl`. This is observational only — we never sit in the request path. Tail it with:
+`oc claude-hooks install` installs an opt-in Claude Code session hook that logs which backend (local, cloud, custom) each session used to `~/.local/state/ollama-claude/sessions.jsonl`. This is observational only - we never sit in the request path. Tail it with:
 
 ```sh
 oc claude-hooks tail

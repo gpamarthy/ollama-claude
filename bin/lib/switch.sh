@@ -1,5 +1,5 @@
 # shellcheck shell=sh
-# oc switch local|cloud — flip Claude Code between local Ollama and cloud Anthropic.
+# oc switch local|cloud - flip Claude Code between local Ollama and cloud Anthropic.
 # Implementation: rewrites ~/.config/ollama-claude/claude-code.env to either
 # export the local base URL + ollama token, or to unset everything so Claude
 # Code falls through to its default cloud endpoint with the user's real key.

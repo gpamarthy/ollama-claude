@@ -34,7 +34,7 @@ export OC_VERSION OC_BIN_DIR OC_PROJECT_ROOT OC_LIB_DIR
 
 usage() {
   cat <<'EOF'
-ollama-claude — hardware-aware bridge between Ollama and Claude Code
+ollama-claude - hardware-aware bridge between Ollama and Claude Code
 
 USAGE
   oc <command> [options]

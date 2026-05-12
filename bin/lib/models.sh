@@ -1,5 +1,5 @@
 # shellcheck shell=sh
-# oc models — list, override, or pin the role->tag map.
+# oc models - list, override, or pin the role->tag map.
 
 # shellcheck source=../../lib/log.sh
 . "$OC_LIB_DIR/log.sh"

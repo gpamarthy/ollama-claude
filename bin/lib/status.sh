@@ -1,5 +1,5 @@
 # shellcheck shell=sh
-# oc status — show health and current state.
+# oc status - show health and current state.
 
 # shellcheck source=../../lib/log.sh
 . "$OC_LIB_DIR/log.sh"

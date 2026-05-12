@@ -18,7 +18,7 @@ source ~/.config/ollama-claude/claude-code.env
 oc wire-up           # makes it permanent
 ```
 
-You also need to restart Claude Code if it was already running — it reads `ANTHROPIC_BASE_URL` once at startup.
+You also need to restart Claude Code if it was already running - it reads `ANTHROPIC_BASE_URL` once at startup.
 
 ## "GPU detected but `ollama ps` shows 0 GPU layers"
 
@@ -34,7 +34,7 @@ oc doctor
 
 ## "Model pull restarts at 0% after a network blip"
 
-Known Ollama issue. `oc install` wraps pulls with retry + exponential backoff; if it gives up after 3 tries, run it again — partial downloads are usually resumable on the second attempt with a recent Ollama.
+Known Ollama issue. `oc install` wraps pulls with retry + exponential backoff; if it gives up after 3 tries, run it again - partial downloads are usually resumable on the second attempt with a recent Ollama.
 
 ## "Qwen tool calls loop forever"
 
@@ -65,7 +65,7 @@ Set `HTTPS_PROXY`, `HTTP_PROXY`, and either `SSL_CERT_FILE` or `CURL_CA_BUNDLE` 
 
 ## "I don't have sudo"
 
-`oc install` falls back to user-mode install: binaries in `~/.local/bin`, user-mode systemd unit. Service won't start on boot in this mode — start it with `systemctl --user start ollama` after login.
+`oc install` falls back to user-mode install: binaries in `~/.local/bin`, user-mode systemd unit. Service won't start on boot in this mode - start it with `systemctl --user start ollama` after login.
 
 ## "Pre-existing Ollama install detected"
 

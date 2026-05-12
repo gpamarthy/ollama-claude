@@ -1,5 +1,5 @@
 # shellcheck shell=sh
-# oc wire-up — inject `source ~/.config/ollama-claude/claude-code.env`
+# oc wire-up - inject `source ~/.config/ollama-claude/claude-code.env`
 # into the user's shell rc. Opt-in. Never touches Claude Code's
 # settings.json unless --claude-settings is passed.
 

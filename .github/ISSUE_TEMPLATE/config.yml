@@ -5,4 +5,4 @@ contact_links:
     about: Ask questions, share configs, propose ideas
   - name: Security report
     url: https://github.com/gpamarthy/ollama-claude/blob/main/SECURITY.md
-    about: Do not file security issues publicly — see SECURITY.md
+    about: Do not file security issues publicly - see SECURITY.md

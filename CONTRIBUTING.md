@@ -2,10 +2,10 @@
 
 Thanks for considering a contribution. The most useful contributions right now are:
 
-1. **New hardware fixtures** in `tests/fixtures/` — canned `nvidia-smi` / `rocm-smi` / `system_profiler` / `Get-CimInstance` outputs from real machines. These drive the unit tests for `lib/detect.sh`.
+1. **New hardware fixtures** in `tests/fixtures/` - canned `nvidia-smi` / `rocm-smi` / `system_profiler` / `Get-CimInstance` outputs from real machines. These drive the unit tests for `lib/detect.sh`.
 2. **Failure reports** for boxes where `oc install` or `oc doctor` does not produce a working setup. Open an issue with `oc version`, `oc status`, and the output of `oc doctor --verbose`.
 3. **Profile bundles** for domains we have not covered yet (mobile, ML research, embedded, …).
-4. **Documentation** — especially `docs/TROUBLESHOOTING.md` entries derived from real support requests.
+4. **Documentation** - especially `docs/TROUBLESHOOTING.md` entries derived from real support requests.
 
 ## Dev setup
 

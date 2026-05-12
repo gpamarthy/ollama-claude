@@ -1,5 +1,5 @@
 # shellcheck shell=sh
-# oc benchmark — calibrate tier with tinyllama prompts. Pulls
+# oc benchmark - calibrate tier with tinyllama prompts. Pulls
 # tinyllama:1.1b if not present, runs 5 prompts of varying length,
 # measures tokens/sec, suggests retier if below/above expected band.
 
@@ -31,7 +31,7 @@ oc_cmd_benchmark() {
     "Write a haiku about a quiet morning."; do
     tps=$(_benchmark_one "$prompt")
     [ -n "$tps" ] || continue
-    printf '  %s tok/s — %s\n' "$tps" "$(printf '%s' "$prompt" | cut -c1-50)"
+    printf '  %s tok/s - %s\n' "$tps" "$(printf '%s' "$prompt" | cut -c1-50)"
     total_tps=$(awk -v t="$total_tps" -v r="$tps" 'BEGIN{printf "%d", t + r}')
     runs=$((runs + 1))
   done

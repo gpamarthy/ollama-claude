@@ -47,7 +47,7 @@ To go back:
 oc switch local
 ```
 
-The `security-research` profile explicitly forbids `oc switch cloud` — fork the profile if you intend to switch.
+The `security-research` profile explicitly forbids `oc switch cloud` - fork the profile if you intend to switch.
 
 ## settings.json fragment
 
@@ -62,7 +62,7 @@ If you'd rather configure Claude Code via its settings file:
 }
 ```
 
-`oc wire-up --claude-settings` will copy `config/claude-code.settings.example.json` to `~/.config/claude/settings.json` (refusing to overwrite if you already have one — merge manually in that case).
+`oc wire-up --claude-settings` will copy `config/claude-code.settings.example.json` to `~/.config/claude/settings.json` (refusing to overwrite if you already have one - merge manually in that case).
 
 ## Attribution-header gotcha
 
@@ -72,7 +72,7 @@ Claude Code adds a per-request `attribution` header that, in some Ollama version
 { "env": { "CLAUDE_CODE_ATTRIBUTION_HEADER": "0" } }
 ```
 
-We don't set this for you — it's a documented behaviour change in a third-party tool and you should make the decision consciously.
+We don't set this for you - it's a documented behaviour change in a third-party tool and you should make the decision consciously.
 
 ## Fallbacks
 

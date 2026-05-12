@@ -65,7 +65,7 @@ bats tests/unit
 ## Design pointers
 
 - §11 of the implementation plan (`/home/kali/.claude/plans/now-wor-on-creating-luminous-firefly.md`) is the canonical layout.
-- §18 of the same plan is the self-audit catalogue — read it before touching anything subtle.
+- §18 of the same plan is the self-audit catalogue - read it before touching anything subtle.
 - Three load-bearing USPs: hardware-tier autopilot, AI dev environment as code (`.ollama-claude.toml` with model digests), explicit local/cloud switch with `oc switch`.
 
 ## Out of scope

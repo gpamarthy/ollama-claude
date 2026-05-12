@@ -1,5 +1,5 @@
 # shellcheck shell=sh
-# oc sync — apply .ollama-claude.toml from cwd over the global config.
+# oc sync - apply .ollama-claude.toml from cwd over the global config.
 
 # shellcheck source=../../lib/log.sh
 . "$OC_LIB_DIR/log.sh"

@@ -6,7 +6,7 @@ In short: be civil. Assume good faith. Disagree on the work, not the person. Har
 
 ## Scope
 
-This Code of Conduct applies in all project spaces — the GitHub repo (issues, PRs, discussions, code), any chat channel run on behalf of the project, and any public event where someone is representing the project.
+This Code of Conduct applies in all project spaces - the GitHub repo (issues, PRs, discussions, code), any chat channel run on behalf of the project, and any public event where someone is representing the project.
 
 ## Reporting
 

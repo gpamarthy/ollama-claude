@@ -41,7 +41,7 @@ Detected via `rocm-smi`. Consumer RDNA cards (6000 and some 7000 series) need `H
 
 ### Apple Silicon
 
-Detected by OS + arch. Apple Metal is automatic — Ollama uses unified memory. We compute effective VRAM as 75% of total RAM. Fanless M-series chassis (Air models) are flagged so sustained workloads warn about thermal throttling.
+Detected by OS + arch. Apple Metal is automatic - Ollama uses unified memory. We compute effective VRAM as 75% of total RAM. Fanless M-series chassis (Air models) are flagged so sustained workloads warn about thermal throttling.
 
 ### Intel Arc / iGPU
 
@@ -78,4 +78,4 @@ roles    = ["heavy"]
 digest   = "sha256:..."
 ```
 
-When teammates run `oc sync` they get the same models — pinned by digest — every time.
+When teammates run `oc sync` they get the same models - pinned by digest - every time.

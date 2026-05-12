@@ -1,5 +1,5 @@
 # shellcheck shell=sh
-# oc claude-hooks — install/remove the session-backend audit hook.
+# oc claude-hooks - install/remove the session-backend audit hook.
 # This writes a Claude Code settings.json fragment that runs our
 # `config/claude-hooks/*.sh` scripts on SessionStart / Stop events.
 

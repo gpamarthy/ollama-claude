@@ -1,5 +1,5 @@
 # shellcheck shell=sh
-# oc topology — read or set the active topology.
+# oc topology - read or set the active topology.
 
 # shellcheck source=../../lib/log.sh
 . "$OC_LIB_DIR/log.sh"

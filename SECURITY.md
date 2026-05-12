@@ -16,10 +16,10 @@ If the maintainer has not responded in 14 days, you are free to disclose publicl
 
 `ollama-claude` is an installer + configurator. It does not sit in the request path, does not run a daemon, and does not transmit data off the host. The threat surfaces we actively defend:
 
-- **Tarball integrity** — `install.sh` verifies SHA256SUMS against the GitHub Release. Phase 2 binaries are cosign-signed.
-- **Network exposure** — `OLLAMA_HOST` defaults to `127.0.0.1`. `--topology split-host` refuses to bind on a non-loopback interface without an explicit `--allow-from CIDR`. `OLLAMA_ORIGINS=*` is never written.
-- **Shell rc / Claude settings mutation** — never modified without explicit `oc wire-up` / `oc wire-up --claude-settings`.
-- **Pre-existing Ollama installs** — detected and reported; never overwritten without prompt.
+- **Tarball integrity** - `install.sh` verifies SHA256SUMS against the GitHub Release. Phase 2 binaries are cosign-signed.
+- **Network exposure** - `OLLAMA_HOST` defaults to `127.0.0.1`. `--topology split-host` refuses to bind on a non-loopback interface without an explicit `--allow-from CIDR`. `OLLAMA_ORIGINS=*` is never written.
+- **Shell rc / Claude settings mutation** - never modified without explicit `oc wire-up` / `oc wire-up --claude-settings`.
+- **Pre-existing Ollama installs** - detected and reported; never overwritten without prompt.
 
 Out of scope (will not be fixed via this project):
 

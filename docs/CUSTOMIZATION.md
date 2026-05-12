@@ -9,7 +9,7 @@ Five config layers and a detection cache. Deep merge, later wins.
 2. Global                (~/.config/ollama-claude/config.toml)
 3. Profile bundle        (~/.config/ollama-claude/profiles/<name>.toml)
 4. Project               (.ollama-claude.toml at git root)
-5. Environment vars      (OC_*  — override anything)
+5. Environment vars      (OC_*  - override anything)
 
 Cache:
    Hardware detection    (~/.local/state/ollama-claude/detected.json)

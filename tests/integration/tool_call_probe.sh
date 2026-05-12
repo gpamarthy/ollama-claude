@@ -17,7 +17,7 @@ fi
 
 # Use the chat API with a tool definition. Many local models won't
 # *correctly* call a tool, but we only assert the response is valid JSON
-# and includes either a tool_use block or a text block — i.e. the
+# and includes either a tool_use block or a text block - i.e. the
 # transport works.
 payload=$(
   cat << EOF

@@ -13,7 +13,7 @@ ExecStart=/usr/local/bin/ollama serve
 Restart=on-failure
 RestartSec=5s
 
-# Environment — rendered by oc install based on topology and HW detection.
+# Environment - rendered by oc install based on topology and HW detection.
 Environment=OLLAMA_HOST=__OLLAMA_HOST__
 Environment=OLLAMA_NUM_CTX=__OLLAMA_NUM_CTX__
 Environment=OLLAMA_KV_CACHE_TYPE=__OLLAMA_KV_CACHE_TYPE__

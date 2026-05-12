@@ -20,7 +20,7 @@ $Script:OC_LIB_DIR = Join-Path $Script:OC_PROJECT_ROOT 'lib'
 
 function Show-Help {
     @'
-ollama-claude — hardware-aware bridge between Ollama and Claude Code
+ollama-claude - hardware-aware bridge between Ollama and Claude Code
 
 USAGE
   oc <command> [options]

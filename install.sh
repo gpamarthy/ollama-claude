@@ -76,7 +76,7 @@ resolve_version() {
   tag=$(printf '%s' "$resp" | awk -F'"' '/"tag_name":/ {print $4; exit}')
   if [ -z "$tag" ]; then
     err "no releases yet for $REPO_OWNER/$REPO_NAME and no OC_VERSION_PIN provided
-            (this is expected before v0.1.0 is tagged — clone the repo and re-run for now)"
+            (this is expected before v0.1.0 is tagged - clone the repo and re-run for now)"
   fi
   printf '%s' "$tag"
 }

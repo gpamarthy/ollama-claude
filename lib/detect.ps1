@@ -1,4 +1,4 @@
-# detect.ps1 — Hardware + OS detection on Windows. Mirror of lib/detect.sh.
+# detect.ps1 - Hardware + OS detection on Windows. Mirror of lib/detect.sh.
 
 function Get-OcDetection {
     [CmdletBinding()]

@@ -1,5 +1,5 @@
 # shellcheck shell=sh
-# oc uninstall — remove configs (and optionally models / Ollama binary).
+# oc uninstall - remove configs (and optionally models / Ollama binary).
 
 # shellcheck source=../../lib/log.sh
 . "$OC_LIB_DIR/log.sh"

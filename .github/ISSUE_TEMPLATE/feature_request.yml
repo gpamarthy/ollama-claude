@@ -14,7 +14,7 @@ body:
     id: proposal
     attributes:
       label: Proposed solution
-      description: One or two paragraphs. Not a full design — that comes later.
+      description: One or two paragraphs. Not a full design - that comes later.
     validations:
       required: true
 

@@ -1,5 +1,5 @@
 # shellcheck shell=sh
-# oc self-update — fetch and verify a newer release tarball.
+# oc self-update - fetch and verify a newer release tarball.
 
 # shellcheck source=../../lib/log.sh
 . "$OC_LIB_DIR/log.sh"

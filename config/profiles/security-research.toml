@@ -1,5 +1,5 @@
 # $schema: https://ollama-claude.dev/schema/profile-v1.json
-# Security research / pentest work. Refuses to flip to cloud — code
+# Security research / pentest work. Refuses to flip to cloud - code
 # under review may be sensitive and must not leave the host.
 
 name        = "security-research"

@@ -1,5 +1,5 @@
 # shellcheck shell=sh
-# oc version — print version info.
+# oc version - print version info.
 
 oc_cmd_version() {
   printf 'ollama-claude %s\n' "$OC_VERSION"

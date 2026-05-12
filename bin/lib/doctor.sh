@@ -1,5 +1,5 @@
 # shellcheck shell=sh
-# oc doctor — end-to-end probe with per-role inference smoke.
+# oc doctor - end-to-end probe with per-role inference smoke.
 
 # shellcheck source=../../lib/log.sh
 . "$OC_LIB_DIR/log.sh"
@@ -58,7 +58,7 @@ oc_cmd_doctor() {
     fi
     if ! oc_ollama_tag_present_locally "$tag"; then
       # Not pulled yet is a remediation suggestion, not a failure.
-      oc_log warn "role '$role': $tag not pulled (run: ollama pull $tag — or: oc install)"
+      oc_log warn "role '$role': $tag not pulled (run: ollama pull $tag - or: oc install)"
       warn=$((warn + 1))
       continue
     fi

@@ -1,5 +1,5 @@
 # shellcheck shell=sh
-# oc init — 3-question wizard that writes a `.ollama-claude.toml` to cwd.
+# oc init - 3-question wizard that writes a `.ollama-claude.toml` to cwd.
 
 # shellcheck source=../../lib/log.sh
 . "$OC_LIB_DIR/log.sh"

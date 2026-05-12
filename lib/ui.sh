@@ -1,6 +1,6 @@
 # shellcheck shell=sh
 # Prompts and confirmation helpers. Designed to fail closed when stdin
-# is not a TTY (e.g. curl|sh piped install) — caller must supply env vars
+# is not a TTY (e.g. curl|sh piped install) - caller must supply env vars
 # or flags instead.
 
 # Returns 0 if stdin is connected to a TTY.

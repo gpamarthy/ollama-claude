@@ -1,5 +1,5 @@
 # shellcheck shell=sh
-# oc install — detect hardware, ensure Ollama is present, pull tier
+# oc install - detect hardware, ensure Ollama is present, pull tier
 # models, render the Claude Code wire-up file.
 
 # shellcheck source=../../lib/log.sh
@@ -83,7 +83,7 @@ oc_cmd_install() {
 
   # Existing-install detection (plan §8.5)
   if _existing_install_present; then
-    oc_log info "pre-existing Ollama install detected — keeping & supplementing (no overwrite)"
+    oc_log info "pre-existing Ollama install detected - keeping & supplementing (no overwrite)"
     if ! oc_confirm "Continue?" yes; then
       oc_log warn "aborting per user choice"
       return 1

@@ -153,7 +153,7 @@ oc_detect_gpu_apple() {
 }
 
 oc_detect_gpu_intel() {
-  # Intel Arc / iGPU via Vulkan probe — last in the order
+  # Intel Arc / iGPU via Vulkan probe - last in the order
   command -v vulkaninfo > /dev/null 2>&1 || return 1
   vk_summary=$(vulkaninfo --summary 2> /dev/null || true)
   case "$vk_summary" in
