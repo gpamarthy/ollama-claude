@@ -38,7 +38,7 @@ oc_claude_wireup_state() {
   fi
   for rc in "$HOME/.bashrc" "$HOME/.zshrc" "$HOME/.profile"; do
     [ -r "$rc" ] || continue
-    if grep -qF "$env_file" "$rc" 2>/dev/null; then
+    if grep -qF "$env_file" "$rc" 2> /dev/null; then
       printf 'wired'
       return 0
     fi
@@ -51,7 +51,7 @@ oc_claude_wireup_state() {
 oc_claude_switch_state() {
   if [ -n "${ANTHROPIC_BASE_URL:-}" ]; then
     case "$ANTHROPIC_BASE_URL" in
-      *127.0.0.1*|*localhost*) printf 'local' ;;
+      *127.0.0.1* | *localhost*) printf 'local' ;;
       *) printf 'cloud' ;;
     esac
   else
@@ -69,10 +69,10 @@ oc_claude_file_state() {
     printf 'no-env-file'
     return 0
   fi
-  if grep -qE '^export ANTHROPIC_BASE_URL=' "$env_file" 2>/dev/null; then
+  if grep -qE '^export ANTHROPIC_BASE_URL=' "$env_file" 2> /dev/null; then
     base=$(awk -F'"' '/^export ANTHROPIC_BASE_URL=/ {print $2; exit}' "$env_file")
     case "$base" in
-      *127.0.0.1*|*localhost*) printf 'local' ;;
+      *127.0.0.1* | *localhost*) printf 'local' ;;
       *) printf 'cloud' ;;
     esac
   else

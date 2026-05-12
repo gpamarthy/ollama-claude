@@ -24,12 +24,11 @@ oc_cmd_benchmark() {
   total_tps=0
   runs=0
   for prompt in \
-      "Say hello." \
-      "List five primary colours." \
-      "Briefly describe a sorting algorithm." \
-      "Translate 'good morning' into three languages." \
-      "Write a haiku about a quiet morning."
-  do
+    "Say hello." \
+    "List five primary colours." \
+    "Briefly describe a sorting algorithm." \
+    "Translate 'good morning' into three languages." \
+    "Write a haiku about a quiet morning."; do
     tps=$(_benchmark_one "$prompt")
     [ -n "$tps" ] || continue
     printf '  %s tok/s — %s\n' "$tps" "$(printf '%s' "$prompt" | cut -c1-50)"
@@ -43,8 +42,8 @@ oc_cmd_benchmark() {
 
   # Compare against tier band
   tiers_file="$OC_PROJECT_ROOT/config/tiers.toml"
-  min_tps=$(oc_toml_get "$tiers_file" "tier.$OC_TIER.expected_tps_min" 2>/dev/null || echo 0)
-  max_tps=$(oc_toml_get "$tiers_file" "tier.$OC_TIER.expected_tps_max" 2>/dev/null || echo 0)
+  min_tps=$(oc_toml_get "$tiers_file" "tier.$OC_TIER.expected_tps_min" 2> /dev/null || echo 0)
+  max_tps=$(oc_toml_get "$tiers_file" "tier.$OC_TIER.expected_tps_max" 2> /dev/null || echo 0)
   printf 'Expected band for tier %s: %s..%s tok/s\n' "$OC_TIER" "$min_tps" "$max_tps"
 
   if [ "$avg" -lt "$min_tps" ]; then
@@ -61,7 +60,7 @@ _benchmark_one() {
   body=$(printf '{"model":"tinyllama:1.1b","prompt":%s,"stream":false}' \
     "$(printf '%s' "$prompt" | _json_str)")
   resp=$(curl -fsS -X POST -H 'content-type: application/json' \
-    -d "$body" "http://127.0.0.1:11434/api/generate" 2>/dev/null || echo '')
+    -d "$body" "http://127.0.0.1:11434/api/generate" 2> /dev/null || echo '')
   # Ollama returns total_duration (ns) and eval_count
   eval_count=$(printf '%s' "$resp" | awk -F'[,:]' '
     {

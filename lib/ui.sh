@@ -15,23 +15,23 @@ oc_confirm() {
   default="${2:-no}"
   if [ "${OC_ASSUME_YES:-0}" = "1" ]; then
     [ "$default" = "yes" ] && return 0
-    [ "$default" = "yes" ] || return 0   # assume yes always when flag set
+    [ "$default" = "yes" ] || return 0 # assume yes always when flag set
   fi
   if ! oc_is_tty; then
     case "$default" in
       yes) return 0 ;;
-      *)   return 1 ;;
+      *) return 1 ;;
     esac
   fi
   case "$default" in
     yes) hint='[Y/n]' ;;
-    *)   hint='[y/N]' ;;
+    *) hint='[y/N]' ;;
   esac
   printf '%s %s ' "$prompt" "$hint"
   read -r reply || reply=''
   case "$reply" in
-    [Yy]|[Yy][Ee][Ss]) return 0 ;;
-    [Nn]|[Nn][Oo])     return 1 ;;
+    [Yy] | [Yy][Ee][Ss]) return 0 ;;
+    [Nn] | [Nn][Oo]) return 1 ;;
     '')
       [ "$default" = "yes" ] && return 0 || return 1
       ;;
@@ -85,7 +85,7 @@ oc_select() {
     return 0
   fi
   case "$reply" in
-    ''|*[!0-9]*)
+    '' | *[!0-9]*)
       printf '%s' "$default"
       ;;
     *)

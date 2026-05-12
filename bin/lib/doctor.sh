@@ -22,7 +22,10 @@ oc_cmd_doctor() {
   oc_log step "Hardware detection"
   oc_detect
   oc_detect_report
-  [ -n "$OC_TIER" ] || { oc_log error "could not determine tier"; fail=$((fail + 1)); }
+  [ -n "$OC_TIER" ] || {
+    oc_log error "could not determine tier"
+    fail=$((fail + 1))
+  }
 
   oc_log step "Ollama health"
   if ! oc_ollama_installed; then
@@ -30,9 +33,9 @@ oc_cmd_doctor() {
     fail=$((fail + 1))
   else
     v=$(oc_ollama_version || echo unknown)
-    oc_log ok  "ollama $v installed"
+    oc_log ok "ollama $v installed"
     if oc_ollama_version_ok; then
-      oc_log ok  "version >= $OLLAMA_MIN_VERSION (Anthropic-compatible endpoint supported)"
+      oc_log ok "version >= $OLLAMA_MIN_VERSION (Anthropic-compatible endpoint supported)"
     else
       oc_log warn "version below $OLLAMA_MIN_VERSION; upgrade for Anthropic-compatible endpoint"
       warn=$((warn + 1))
@@ -92,7 +95,7 @@ _probe_inference() {
   tag="$1"
   body=$(printf '{"model":"%s","prompt":"Say OK.","stream":false}' "$tag")
   resp=$(curl -fsS -X POST -H 'content-type: application/json' \
-    -d "$body" "http://127.0.0.1:11434/api/generate" 2>/dev/null || echo '')
+    -d "$body" "http://127.0.0.1:11434/api/generate" 2> /dev/null || echo '')
   case "$resp" in
     *response*) return 0 ;;
     *) return 1 ;;

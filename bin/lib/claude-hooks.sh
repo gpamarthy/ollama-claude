@@ -11,7 +11,7 @@
 . "$OC_LIB_DIR/ui.sh"
 
 _hooks_usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 USAGE
   oc claude-hooks install         Install the session-backend audit hook
   oc claude-hooks remove          Remove it
@@ -23,11 +23,14 @@ EOF
 oc_cmd_claude_hooks() {
   case "${1:-status}" in
     install) _hooks_install ;;
-    remove)  _hooks_remove ;;
-    status)  _hooks_status ;;
-    tail)    _hooks_tail ;;
-    -h|--help) _hooks_usage ;;
-    *) _hooks_usage >&2; return 2 ;;
+    remove) _hooks_remove ;;
+    status) _hooks_status ;;
+    tail) _hooks_tail ;;
+    -h | --help) _hooks_usage ;;
+    *)
+      _hooks_usage >&2
+      return 2
+      ;;
   esac
 }
 
@@ -40,7 +43,7 @@ _hooks_install() {
   mkdir -p "$dst_dir"
 
   cp "$OC_PROJECT_ROOT/config/claude-hooks/session-start.sh" "$dst_dir/oc-session-start.sh"
-  cp "$OC_PROJECT_ROOT/config/claude-hooks/stop.sh"          "$dst_dir/oc-stop.sh"
+  cp "$OC_PROJECT_ROOT/config/claude-hooks/stop.sh" "$dst_dir/oc-stop.sh"
   chmod +x "$dst_dir/oc-session-start.sh" "$dst_dir/oc-stop.sh"
 
   settings="$(_settings_dir)/settings.json"
@@ -50,7 +53,7 @@ _hooks_install() {
     printf '  Stop         -> %s/oc-stop.sh\n' "$dst_dir"
     return 1
   fi
-  cat > "$settings" <<EOF
+  cat > "$settings" << EOF
 {
   "hooks": {
     "SessionStart": [

@@ -19,12 +19,12 @@ oc_cmd_sync() {
   oc_log step "syncing from $proj"
 
   # MVP: read topology + profile + pinned models, run oc install accordingly.
-  topology=$(oc_toml_get "$proj" topology.default 2>/dev/null || echo "")
-  profile=$(oc_toml_get "$proj" active.profile 2>/dev/null || echo "")
+  topology=$(oc_toml_get "$proj" topology.default 2> /dev/null || echo "")
+  profile=$(oc_toml_get "$proj" active.profile 2> /dev/null || echo "")
 
   set -- install
   [ -n "$topology" ] && set -- "$@" --topology "$topology"
-  [ -n "$profile" ]  && set -- "$@" --profile "$profile"
+  [ -n "$profile" ] && set -- "$@" --profile "$profile"
 
   "$OC_BIN_DIR/oc" "$@"
 }

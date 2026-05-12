@@ -27,8 +27,8 @@ for i in $(seq 1 "$ITER"); do
     1) base="http://0.0.0.0:11434" ;;
     2) base="http://192.168.$(rand_int 0 255).$(rand_int 1 254):11434" ;;
   esac
-  out=$(mktemp 2>/dev/null || echo /tmp/oc-prop.tmp)
-  OC_PROJECT_ROOT="$PROJECT_ROOT" oc_render_claude_env "$base" "$out" >/dev/null
+  out=$(mktemp 2> /dev/null || echo /tmp/oc-prop.tmp)
+  OC_PROJECT_ROOT="$PROJECT_ROOT" oc_render_claude_env "$base" "$out" > /dev/null
 
   # Invariants:
   # 1. ANTHROPIC_BASE_URL exactly matches what we rendered

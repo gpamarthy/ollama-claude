@@ -11,7 +11,7 @@
 . "$OC_LIB_DIR/ui.sh"
 
 _wireup_usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 USAGE
   oc wire-up [--dry-run] [--shell <bash|zsh|fish|powershell>] [--claude-settings]
 
@@ -33,11 +33,27 @@ oc_cmd_wire_up() {
 
   while [ $# -gt 0 ]; do
     case "$1" in
-      --dry-run)         dry=1; shift ;;
-      --shell)           shell_override="$2"; shift 2 ;;
-      --claude-settings) do_settings=1; shift ;;
-      -h|--help)         _wireup_usage; return 0 ;;
-      *) oc_log error "unknown flag: $1"; _wireup_usage >&2; return 2 ;;
+      --dry-run)
+        dry=1
+        shift
+        ;;
+      --shell)
+        shell_override="$2"
+        shift 2
+        ;;
+      --claude-settings)
+        do_settings=1
+        shift
+        ;;
+      -h | --help)
+        _wireup_usage
+        return 0
+        ;;
+      *)
+        oc_log error "unknown flag: $1"
+        _wireup_usage >&2
+        return 2
+        ;;
     esac
   done
 
@@ -47,16 +63,16 @@ oc_cmd_wire_up() {
   shell="$shell_override"
   if [ -z "$shell" ]; then
     case "${SHELL:-}" in
-      *zsh*)  shell="zsh" ;;
+      *zsh*) shell="zsh" ;;
       *bash*) shell="bash" ;;
       *fish*) shell="fish" ;;
-      *)      shell="bash" ;;
+      *) shell="bash" ;;
     esac
   fi
 
   case "$shell" in
     bash) rc="$HOME/.bashrc" ;;
-    zsh)  rc="$HOME/.zshrc"  ;;
+    zsh) rc="$HOME/.zshrc" ;;
     fish) rc="$HOME/.config/fish/config.fish" ;;
     powershell)
       oc_log info "for PowerShell, run: oc.ps1 wire-up"
@@ -79,7 +95,10 @@ oc_cmd_wire_up() {
     return 0
   fi
 
-  oc_confirm "Append to $rc?" yes || { oc_log warn "skipped wire-up"; return 0; }
+  oc_confirm "Append to $rc?" yes || {
+    oc_log warn "skipped wire-up"
+    return 0
+  }
   mkdir -p "$(dirname "$rc")"
   {
     printf '\n# ollama-claude: route Claude Code to local Ollama\n'

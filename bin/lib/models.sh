@@ -11,7 +11,7 @@
 . "$OC_LIB_DIR/ollama.sh"
 
 _models_usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 USAGE
   oc models                      List current role->tag map for detected tier
   oc models set <role> <tag>     Override the tag for a role in the global config
@@ -39,14 +39,17 @@ oc_cmd_models() {
     set)
       role="${2:-}"
       tag="${3:-}"
-      [ -n "$role" ] && [ -n "$tag" ] || { _models_usage; return 2; }
+      [ -n "$role" ] && [ -n "$tag" ] || {
+        _models_usage
+        return 2
+      }
       cfg="$(oc_config_home)/config.toml"
       mkdir -p "$(dirname "$cfg")"
       if [ ! -r "$cfg" ]; then
         printf '[overrides]\n' > "$cfg"
       fi
       # Append (idempotent: remove any existing override for this role first)
-      tmp=$(mktemp 2>/dev/null || echo /tmp/oc-models.tmp)
+      tmp=$(mktemp 2> /dev/null || echo /tmp/oc-models.tmp)
       grep -v "^${role}[[:space:]]*=" "$cfg" > "$tmp" || true
       mv "$tmp" "$cfg"
       printf '%s = "%s"\n' "$role" "$tag" >> "$cfg"
@@ -54,10 +57,13 @@ oc_cmd_models() {
       ;;
     reset)
       role="${2:-}"
-      [ -n "$role" ] || { _models_usage; return 2; }
+      [ -n "$role" ] || {
+        _models_usage
+        return 2
+      }
       cfg="$(oc_config_home)/config.toml"
       [ -r "$cfg" ] || return 0
-      tmp=$(mktemp 2>/dev/null || echo /tmp/oc-models.tmp)
+      tmp=$(mktemp 2> /dev/null || echo /tmp/oc-models.tmp)
       grep -v "^${role}[[:space:]]*=" "$cfg" > "$tmp" || true
       mv "$tmp" "$cfg"
       oc_log ok "removed override for $role"
@@ -65,13 +71,16 @@ oc_cmd_models() {
     pin)
       proj="$PWD/.ollama-claude.toml"
       [ -r "$proj" ] || oc_die "no .ollama-claude.toml in $PWD"
-      tmp=$(mktemp 2>/dev/null || echo /tmp/oc-pin.tmp)
+      tmp=$(mktemp 2> /dev/null || echo /tmp/oc-pin.tmp)
       cp "$proj" "$tmp"
       for role in fast tools heavy; do
         tag=$(oc_resolve_model "$models_file" "$OC_TIER" "$role")
         [ -n "$tag" ] || continue
-        digest=$(oc_ollama_digest "$tag" 2>/dev/null || echo "")
-        [ -n "$digest" ] || { oc_log warn "no local digest for $tag (run ollama pull first)"; continue; }
+        digest=$(oc_ollama_digest "$tag" 2> /dev/null || echo "")
+        [ -n "$digest" ] || {
+          oc_log warn "no local digest for $tag (run ollama pull first)"
+          continue
+        }
         {
           printf '\n[[models]]\n'
           printf 'name     = "%s"\n' "$tag"
@@ -83,7 +92,7 @@ oc_cmd_models() {
       mv "$tmp" "$proj"
       oc_log ok "pinned digests in $proj"
       ;;
-    -h|--help)
+    -h | --help)
       _models_usage
       ;;
     *)

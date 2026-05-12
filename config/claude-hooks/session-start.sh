@@ -15,7 +15,7 @@ backend="cloud"
 local_marker="${OC_LOCAL_HOST:-127.0.0.1}"
 if [ -n "${ANTHROPIC_BASE_URL:-}" ]; then
   case "$ANTHROPIC_BASE_URL" in
-    *"$local_marker"*|*localhost*|*127.0.0.1*|*0.0.0.0*)
+    *"$local_marker"* | *localhost* | *127.0.0.1* | *0.0.0.0*)
       backend="local"
       ;;
     *)

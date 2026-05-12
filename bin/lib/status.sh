@@ -28,7 +28,7 @@ oc_cmd_status() {
     else
       printf '  Service:           not reachable on 127.0.0.1:11434\n'
     fi
-    n=$(ollama list 2>/dev/null | awk 'NR>1' | wc -l | tr -d ' ')
+    n=$(ollama list 2> /dev/null | awk 'NR>1' | wc -l | tr -d ' ')
     printf '  Models present:    %s\n' "$n"
   else
     printf '  Not installed.\n'

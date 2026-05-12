@@ -26,7 +26,7 @@ OC_HSA_OVERRIDE=""
 _OC_CACHE_MAX_AGE_SECS=604800
 
 oc_detect_os() {
-  case "$(uname -s 2>/dev/null)" in
+  case "$(uname -s 2> /dev/null)" in
     Linux)
       OC_OS="linux"
       if [ -r /proc/sys/kernel/osrelease ]; then
@@ -38,7 +38,7 @@ oc_detect_os() {
     Darwin)
       OC_OS="macos"
       # Rosetta check (Apple Silicon native vs translated x86_64)
-      if [ "$(sysctl -n sysctl.proc_translated 2>/dev/null || echo 0)" = "1" ]; then
+      if [ "$(sysctl -n sysctl.proc_translated 2> /dev/null || echo 0)" = "1" ]; then
         OC_ROSETTA=1
       fi
       ;;
@@ -46,51 +46,51 @@ oc_detect_os() {
       OC_OS="unknown"
       ;;
   esac
-  OC_ARCH="$(uname -m 2>/dev/null || echo unknown)"
+  OC_ARCH="$(uname -m 2> /dev/null || echo unknown)"
 }
 
 oc_detect_ram_gb() {
   case "$OC_OS" in
     linux)
       if [ -r /proc/meminfo ]; then
-        kb=$(awk '/^MemTotal:/ {print $2}' /proc/meminfo 2>/dev/null || echo 0)
+        kb=$(awk '/^MemTotal:/ {print $2}' /proc/meminfo 2> /dev/null || echo 0)
         OC_RAM_GB=$((kb / 1024 / 1024))
       fi
       ;;
     macos)
-      bytes=$(sysctl -n hw.memsize 2>/dev/null || echo 0)
+      bytes=$(sysctl -n hw.memsize 2> /dev/null || echo 0)
       OC_RAM_GB=$((bytes / 1024 / 1024 / 1024))
       ;;
   esac
 }
 
 oc_detect_gpu_nvidia() {
-  command -v nvidia-smi >/dev/null 2>&1 || return 1
-  vram_mb=$(nvidia-smi --query-gpu=memory.total --format=csv,noheader,nounits 2>/dev/null \
-    | head -n1 | tr -d ' ')
+  command -v nvidia-smi > /dev/null 2>&1 || return 1
+  vram_mb=$(nvidia-smi --query-gpu=memory.total --format=csv,noheader,nounits 2> /dev/null |
+    head -n1 | tr -d ' ')
   case "$vram_mb" in
-    ''|*[!0-9]*) return 1 ;;
+    '' | *[!0-9]*) return 1 ;;
   esac
   OC_GPU_VENDOR="nvidia"
   # Round to nearest GB; a 24 GB card reports ~24564 MB and we want 24, not 23.
-  OC_VRAM_GB=$(( (vram_mb + 512) / 1024 ))
+  OC_VRAM_GB=$(((vram_mb + 512) / 1024))
   return 0
 }
 
 oc_detect_gpu_amd() {
-  command -v rocm-smi >/dev/null 2>&1 || return 1
+  command -v rocm-smi > /dev/null 2>&1 || return 1
   # `rocm-smi --showmeminfo vram` outputs include lines like
   # "GPU[0] : VRAM Total Memory (B): 17163091968"
-  bytes=$(rocm-smi --showmeminfo vram 2>/dev/null \
-    | awk -F: '/VRAM Total Memory/ {gsub(/[^0-9]/, "", $NF); print $NF; exit}')
+  bytes=$(rocm-smi --showmeminfo vram 2> /dev/null |
+    awk -F: '/VRAM Total Memory/ {gsub(/[^0-9]/, "", $NF); print $NF; exit}')
   case "$bytes" in
-    ''|*[!0-9]*) return 1 ;;
+    '' | *[!0-9]*) return 1 ;;
   esac
   OC_GPU_VENDOR="amd"
   # Round to nearest GB
-  OC_VRAM_GB=$(( (bytes + 536870912) / 1073741824 ))
+  OC_VRAM_GB=$(((bytes + 536870912) / 1073741824))
   # Look up HSA override by chip name
-  chip=$(rocm-smi --showproductname 2>/dev/null | awk -F: '/Card series|Card SKU|Card Model|Card vendor/ {print $NF; exit}' | sed 's/^ *//;s/ *$//')
+  chip=$(rocm-smi --showproductname 2> /dev/null | awk -F: '/Card series|Card SKU|Card Model|Card vendor/ {print $NF; exit}' | sed 's/^ *//;s/ *$//')
   OC_HSA_OVERRIDE=$(_oc_amd_override_for "$chip")
   return 0
 }
@@ -117,7 +117,7 @@ _oc_amd_override_for() {
     END {
       # Re-scan to do substring match (simpler than a streaming version)
     }
-  ' "$override_file" >/dev/null
+  ' "$override_file" > /dev/null
   # Simpler: streaming scan
   awk -v c="$chip" '
     /^\[\[chip\]\]/ { m=""; o=""; in_b=1; next }
@@ -138,10 +138,10 @@ oc_detect_gpu_apple() {
   # Must actually be able to probe Apple hardware, not just be on macos.
   # This makes the function mockable from PATH-overridden test harnesses
   # (hide system_profiler -> apple detection fails -> falls through to CPU).
-  command -v system_profiler >/dev/null 2>&1 || return 1
-  hw=$(system_profiler SPHardwareDataType 2>/dev/null) || return 1
+  command -v system_profiler > /dev/null 2>&1 || return 1
+  hw=$(system_profiler SPHardwareDataType 2> /dev/null) || return 1
   case "$hw" in
-    *"Chip:"*Apple*|*"Apple M"*|*"Apple Silicon"*) : ;;
+    *"Chip:"*Apple* | *"Apple M"* | *"Apple Silicon"*) : ;;
     *) return 1 ;;
   esac
 
@@ -154,17 +154,17 @@ oc_detect_gpu_apple() {
 
 oc_detect_gpu_intel() {
   # Intel Arc / iGPU via Vulkan probe — last in the order
-  command -v vulkaninfo >/dev/null 2>&1 || return 1
-  vk_summary=$(vulkaninfo --summary 2>/dev/null || true)
+  command -v vulkaninfo > /dev/null 2>&1 || return 1
+  vk_summary=$(vulkaninfo --summary 2> /dev/null || true)
   case "$vk_summary" in
     *Intel*)
       OC_GPU_VENDOR="intel_vulkan"
       # Best-effort VRAM: parse first deviceLocalMemory line
-      mb=$(printf '%s\n' "$vk_summary" \
-        | awk '/deviceLocalMemory|deviceMemoryBudget/ {gsub(/[^0-9]/, "", $NF); print $NF; exit}')
+      mb=$(printf '%s\n' "$vk_summary" |
+        awk '/deviceLocalMemory|deviceMemoryBudget/ {gsub(/[^0-9]/, "", $NF); print $NF; exit}')
       case "$mb" in
-        ''|*[!0-9]*) OC_VRAM_GB=0 ;;
-        *)           OC_VRAM_GB=$((mb / 1024 / 1024)) ;;
+        '' | *[!0-9]*) OC_VRAM_GB=0 ;;
+        *) OC_VRAM_GB=$((mb / 1024 / 1024)) ;;
       esac
       return 0
       ;;
@@ -202,9 +202,9 @@ oc_compute_effective_vram() {
 oc_compute_tier() {
   vram="$OC_EFFECTIVE_VRAM_GB"
   ram="$OC_RAM_GB"
-  if   [ "$vram" -lt 4 ]; then
+  if [ "$vram" -lt 4 ]; then
     OC_TIER="cpu"
-  elif [ "$vram" -le 8  ] && [ "$ram" -ge 8  ]; then
+  elif [ "$vram" -le 8 ] && [ "$ram" -ge 8 ]; then
     OC_TIER="low"
   elif [ "$vram" -le 16 ] && [ "$ram" -ge 16 ]; then
     OC_TIER="mid"
@@ -214,10 +214,14 @@ oc_compute_tier() {
     OC_TIER="workstation"
   else
     # Fallback: pick by VRAM alone if the RAM gate misses (rare on dev boxes)
-    if   [ "$vram" -le 8 ];  then OC_TIER="low"
-    elif [ "$vram" -le 16 ]; then OC_TIER="mid"
-    elif [ "$vram" -lt 24 ]; then OC_TIER="high"
-    else                          OC_TIER="workstation"
+    if [ "$vram" -le 8 ]; then
+      OC_TIER="low"
+    elif [ "$vram" -le 16 ]; then
+      OC_TIER="mid"
+    elif [ "$vram" -lt 24 ]; then
+      OC_TIER="high"
+    else
+      OC_TIER="workstation"
     fi
   fi
 }
@@ -237,11 +241,11 @@ oc_load_detection_cache() {
   [ "${OC_REFRESH_DETECT:-0}" = "1" ] && return 1
 
   # Age check
-  now=$(date +%s 2>/dev/null || echo 0)
-  generated=$(awk -F'"' '/"generated_at_unix"/ {print $4}' "$OC_DETECTED_FILE" 2>/dev/null \
-    | head -n1)
+  now=$(date +%s 2> /dev/null || echo 0)
+  generated=$(awk -F'"' '/"generated_at_unix"/ {print $4}' "$OC_DETECTED_FILE" 2> /dev/null |
+    head -n1)
   case "$generated" in
-    ''|*[!0-9]*) return 1 ;;
+    '' | *[!0-9]*) return 1 ;;
   esac
   age=$((now - generated))
   if [ "$age" -gt "$_OC_CACHE_MAX_AGE_SECS" ]; then
@@ -288,9 +292,9 @@ _oc_json_get() {
 
 oc_save_detection_cache() {
   mkdir -p "$OC_STATE_DIR"
-  now=$(date +%s 2>/dev/null || echo 0)
-  ts=$(date -u +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || echo unknown)
-  cat > "$OC_DETECTED_FILE" <<EOF
+  now=$(date +%s 2> /dev/null || echo 0)
+  ts=$(date -u +%Y-%m-%dT%H:%M:%SZ 2> /dev/null || echo unknown)
+  cat > "$OC_DETECTED_FILE" << EOF
 {
   "schema_version": 1,
   "generated_at": "$ts",
@@ -329,7 +333,7 @@ oc_detect_report() {
   printf '  Effective VRAM:    %s GB\n' "$OC_EFFECTIVE_VRAM_GB"
   printf '  RAM:               %s GB\n' "$OC_RAM_GB"
   printf '  Tier:              %s\n' "$OC_TIER"
-  [ "$OC_WSL2" = "1" ]    && printf '  WSL2:              yes\n'
+  [ "$OC_WSL2" = "1" ] && printf '  WSL2:              yes\n'
   [ "$OC_ROSETTA" = "1" ] && printf '  Rosetta:           yes (run natively for best results)\n'
   [ "$OC_FANLESS" = "1" ] && printf '  Fanless chassis:   yes (consider --battery-friendly)\n'
   [ -n "$OC_HSA_OVERRIDE" ] && printf '  HSA_OVERRIDE:      %s\n' "$OC_HSA_OVERRIDE"

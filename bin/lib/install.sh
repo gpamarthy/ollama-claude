@@ -18,7 +18,7 @@
 . "$OC_LIB_DIR/claude.sh"
 
 _install_usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 USAGE
   oc install [--topology same|split-host|split-client]
              [--allow-from CIDR]     (split-host only)
@@ -41,14 +41,39 @@ oc_cmd_install() {
 
   while [ $# -gt 0 ]; do
     case "$1" in
-      --topology)      topology="$2"; shift 2 ;;
-      --allow-from)    allow_from="$2"; shift 2 ;;
-      --host)          remote_host="$2"; shift 2 ;;
-      --profile)       profile="$2"; shift 2 ;;
-      --skip-pull)     skip_pull=1; shift ;;
-      --yes|-y)        export OC_ASSUME_YES=1; shift ;;
-      -h|--help)       _install_usage; return 0 ;;
-      *)               oc_log error "unknown flag: $1"; _install_usage >&2; return 2 ;;
+      --topology)
+        topology="$2"
+        shift 2
+        ;;
+      --allow-from)
+        allow_from="$2"
+        shift 2
+        ;;
+      --host)
+        remote_host="$2"
+        shift 2
+        ;;
+      --profile)
+        profile="$2"
+        shift 2
+        ;;
+      --skip-pull)
+        skip_pull=1
+        shift
+        ;;
+      --yes | -y)
+        export OC_ASSUME_YES=1
+        shift
+        ;;
+      -h | --help)
+        _install_usage
+        return 0
+        ;;
+      *)
+        oc_log error "unknown flag: $1"
+        _install_usage >&2
+        return 2
+        ;;
     esac
   done
 
@@ -76,7 +101,7 @@ oc_cmd_install() {
   fi
 
   case "$topology" in
-    same|split-host|split-client) ;;
+    same | split-host | split-client) ;;
     *) oc_die "invalid topology: $topology" ;;
   esac
 
@@ -87,8 +112,8 @@ oc_cmd_install() {
 
   # Topology-specific install path
   case "$topology" in
-    same)         _install_same ;;
-    split-host)   _install_split_host "$allow_from" ;;
+    same) _install_same ;;
+    split-host) _install_split_host "$allow_from" ;;
     split-client) _install_split_client "$remote_host" ;;
   esac
 
@@ -109,7 +134,7 @@ oc_cmd_install() {
 }
 
 _existing_install_present() {
-  command -v ollama >/dev/null 2>&1 && return 0
+  command -v ollama > /dev/null 2>&1 && return 0
   [ -e /etc/systemd/system/ollama.service ] && return 0
   [ -d /etc/ollama ] && return 0
   [ -d "$HOME/.ollama" ] && return 0
@@ -179,16 +204,16 @@ _persist_state() {
   state_dir="$(oc_config_home)"
   mkdir -p "$state_dir"
   printf '%s\n' "$topology" > "$state_dir/topology"
-  printf '%s\n' "$profile"  > "$state_dir/profile"
+  printf '%s\n' "$profile" > "$state_dir/profile"
 }
 
 _write_claude_env() {
   topology="$1"
   remote_host="$2"
   case "$topology" in
-    same)         base_url="http://127.0.0.1:11434" ;;
-    split-host)   base_url="http://127.0.0.1:11434" ;;   # served locally; client points elsewhere
-    split-client) base_url="http://$remote_host"   ;;
+    same) base_url="http://127.0.0.1:11434" ;;
+    split-host) base_url="http://127.0.0.1:11434" ;; # served locally; client points elsewhere
+    split-client) base_url="http://$remote_host" ;;
   esac
   out=$(oc_render_claude_env "$base_url")
   oc_log ok "wrote $out"

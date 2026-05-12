@@ -16,10 +16,13 @@ fi
 case "$cidr" in
   *.*.*.*/[0-9]*) : ;;
   *::*/*) : ;;
-  *) printf 'invalid CIDR: %s\n' "$cidr" >&2; exit 2 ;;
+  *)
+    printf 'invalid CIDR: %s\n' "$cidr" >&2
+    exit 2
+    ;;
 esac
 
-if command -v ufw >/dev/null 2>&1; then
+if command -v ufw > /dev/null 2>&1; then
   if ufw status | grep -qE "11434.*$cidr"; then
     printf '[ok] ufw rule already present for %s\n' "$cidr"
     exit 0
@@ -29,7 +32,7 @@ if command -v ufw >/dev/null 2>&1; then
   exit 0
 fi
 
-if command -v firewall-cmd >/dev/null 2>&1; then
+if command -v firewall-cmd > /dev/null 2>&1; then
   firewall-cmd --permanent --zone=trusted --add-source="$cidr"
   firewall-cmd --permanent --zone=trusted --add-port=11434/tcp
   firewall-cmd --reload
@@ -37,7 +40,7 @@ if command -v firewall-cmd >/dev/null 2>&1; then
   exit 0
 fi
 
-if command -v iptables >/dev/null 2>&1; then
+if command -v iptables > /dev/null 2>&1; then
   iptables -A INPUT -p tcp -s "$cidr" --dport 11434 -j ACCEPT
   printf '[ok] iptables rule added (NOT persisted across reboot)\n'
   exit 0

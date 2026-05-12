@@ -9,7 +9,7 @@
 . "$OC_LIB_DIR/ui.sh"
 
 _uninstall_usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 USAGE
   oc uninstall              Remove ollama-claude configs only
   oc uninstall --purge      ... and remove pulled Ollama models
@@ -25,10 +25,23 @@ oc_cmd_uninstall() {
   all=0
   while [ $# -gt 0 ]; do
     case "$1" in
-      --purge) purge=1; shift ;;
-      --all)   all=1; purge=1; shift ;;
-      -h|--help) _uninstall_usage; return 0 ;;
-      *) _uninstall_usage >&2; return 2 ;;
+      --purge)
+        purge=1
+        shift
+        ;;
+      --all)
+        all=1
+        purge=1
+        shift
+        ;;
+      -h | --help)
+        _uninstall_usage
+        return 0
+        ;;
+      *)
+        _uninstall_usage >&2
+        return 2
+        ;;
     esac
   done
 
@@ -38,10 +51,10 @@ oc_cmd_uninstall() {
   oc_log ok "configs and state removed"
 
   if [ "$purge" = "1" ]; then
-    if command -v ollama >/dev/null 2>&1; then
+    if command -v ollama > /dev/null 2>&1; then
       oc_confirm "Remove all pulled Ollama models?" no || return 0
-      ollama list 2>/dev/null | awk 'NR>1 {print $1}' | while IFS= read -r tag; do
-        [ -n "$tag" ] && ollama rm "$tag" 2>/dev/null || true
+      ollama list 2> /dev/null | awk 'NR>1 {print $1}' | while IFS= read -r tag; do
+        [ -n "$tag" ] && ollama rm "$tag" 2> /dev/null || true
       done
       oc_log ok "models removed"
     fi

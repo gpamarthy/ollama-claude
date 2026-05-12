@@ -5,7 +5,7 @@
 . "$OC_LIB_DIR/log.sh"
 
 _self_update_usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 USAGE
   oc self-update                Fetch latest release; activate it
   oc self-update --to <version> Pin to a specific version

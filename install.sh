@@ -24,7 +24,7 @@ set -eu
 # install.sh is POSIX-portable enough for sh, but several upgrades (arrays,
 # `local`, process substitution) make bash strictly easier. If we are not
 # already in bash and bash exists, re-exec there.
-if [ -z "${BASH_VERSION:-}" ] && command -v bash >/dev/null 2>&1; then
+if [ -z "${BASH_VERSION:-}" ] && command -v bash > /dev/null 2>&1; then
   exec bash "$0" "$@"
 fi
 
@@ -36,13 +36,16 @@ VERSION_PIN="${OC_VERSION_PIN:-}"
 
 [ -t 0 ] || OC_ASSUME_YES="${OC_ASSUME_YES:-1}"
 
-err() { printf '[err ] %s\n' "$*" >&2; exit 1; }
+err() {
+  printf '[err ] %s\n' "$*" >&2
+  exit 1
+}
 log() { printf '[info] %s\n' "$*"; }
-ok()  { printf '[ ok ] %s\n' "$*"; }
+ok() { printf '[ ok ] %s\n' "$*"; }
 
 # ---- prerequisites -------------------------------------------------------
 for tool in curl tar; do
-  command -v "$tool" >/dev/null 2>&1 || err "missing prerequisite: $tool"
+  command -v "$tool" > /dev/null 2>&1 || err "missing prerequisite: $tool"
 done
 
 # ---- pick a fetch strategy -----------------------------------------------
@@ -51,7 +54,7 @@ done
 script_dir=""
 case "$0" in
   /*) script_dir=$(dirname "$0") ;;
-  *)  case "$(pwd)" in *) script_dir="$(pwd)/$(dirname "$0")" ;; esac ;;
+  *) case "$(pwd)" in *) script_dir="$(pwd)/$(dirname "$0")" ;; esac ;;
 esac
 
 if [ -d "$script_dir/bin" ] && [ -d "$script_dir/lib" ] && [ -r "$script_dir/bin/oc" ]; then
@@ -69,7 +72,7 @@ resolve_version() {
     return 0
   fi
   api="https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/releases/latest"
-  resp=$(curl -fsSL "$api" 2>/dev/null || true)
+  resp=$(curl -fsSL "$api" 2> /dev/null || true)
   tag=$(printf '%s' "$resp" | awk -F'"' '/"tag_name":/ {print $4; exit}')
   if [ -z "$tag" ]; then
     err "no releases yet for $REPO_OWNER/$REPO_NAME and no OC_VERSION_PIN provided
@@ -95,7 +98,7 @@ else
   url="https://github.com/$REPO_OWNER/$REPO_NAME/releases/download/$version/$tarball"
   sums_url="https://github.com/$REPO_OWNER/$REPO_NAME/releases/download/$version/SHA256SUMS"
 
-  workdir=$(mktemp -d 2>/dev/null || echo "/tmp/oc-install.$$")
+  workdir=$(mktemp -d 2> /dev/null || echo "/tmp/oc-install.$$")
   trap 'rm -rf "$workdir"' EXIT INT TERM
 
   log "fetching $tarball"
@@ -105,7 +108,7 @@ else
   if curl -fsSL -o "$workdir/SHA256SUMS" "$sums_url"; then
     expected=$(awk -v t="$tarball" '$2 == t {print $1; exit}' "$workdir/SHA256SUMS")
     if [ -n "$expected" ]; then
-      actual=$(sha256sum "$workdir/$tarball" 2>/dev/null | awk '{print $1}')
+      actual=$(sha256sum "$workdir/$tarball" 2> /dev/null | awk '{print $1}')
       if [ -z "$actual" ]; then
         actual=$(shasum -a 256 "$workdir/$tarball" | awk '{print $1}')
       fi
@@ -124,7 +127,7 @@ fi
 
 # ---- symlink dispatcher --------------------------------------------------
 target="$dest/bin/oc"
-[ -x "$target" ] || chmod +x "$target" 2>/dev/null || err "$target missing"
+[ -x "$target" ] || chmod +x "$target" 2> /dev/null || err "$target missing"
 ln -sf "$target" "$LINK_DIR/oc"
 ok "linked $LINK_DIR/oc -> $target"
 

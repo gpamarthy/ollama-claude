@@ -15,11 +15,11 @@ PROJECT_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 . "$PROJECT_ROOT/lib/ollama.sh"
 
 # Start the pull in background, kill after 2s, then assert retry recovers.
-( OC_PROJECT_ROOT="$PROJECT_ROOT" oc_ollama_pull tinyllama:1.1b ) &
+(OC_PROJECT_ROOT="$PROJECT_ROOT" oc_ollama_pull tinyllama:1.1b) &
 pid=$!
 sleep 2
 # Kill any child curls under our pgid
-pkill -P "$pid" curl 2>/dev/null || true
+pkill -P "$pid" curl 2> /dev/null || true
 wait "$pid" || true
 
 # Re-attempt; expect success eventually.

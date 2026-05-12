@@ -64,7 +64,7 @@ oc_resolve_model() {
   # 1. User override wins
   user_cfg="$(oc_config_home)/config.toml"
   if [ -r "$user_cfg" ]; then
-    override=$(oc_toml_get "$user_cfg" "overrides.$role" 2>/dev/null || true)
+    override=$(oc_toml_get "$user_cfg" "overrides.$role" 2> /dev/null || true)
     if [ -n "${override:-}" ]; then
       printf '%s' "$override"
       return 0
@@ -78,11 +78,11 @@ oc_resolve_model() {
       found_tier=1
     fi
     if [ "$found_tier" = "1" ]; then
-      val=$(oc_toml_get "$models_file" "tier.$t.$role" 2>/dev/null || true)
+      val=$(oc_toml_get "$models_file" "tier.$t.$role" 2> /dev/null || true)
       # If the key exists at all, the awk script either prints a value
       # or prints empty (for `key = ""`). Distinguish "key exists, empty"
       # from "key not found" by checking the awk exit code path.
-      if oc_toml_get "$models_file" "tier.$t.$role" >/dev/null 2>&1; then
+      if oc_toml_get "$models_file" "tier.$t.$role" > /dev/null 2>&1; then
         printf '%s' "$val"
         return 0
       fi

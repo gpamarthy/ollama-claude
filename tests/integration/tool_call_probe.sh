@@ -10,7 +10,7 @@ set -eu
 MODEL="${1:-qwen3:8b}"
 ENDPOINT="${OC_ENDPOINT:-http://127.0.0.1:11434}"
 
-if ! command -v curl >/dev/null 2>&1; then
+if ! command -v curl > /dev/null 2>&1; then
   echo "[err ] curl is required" >&2
   exit 1
 fi
@@ -19,7 +19,8 @@ fi
 # *correctly* call a tool, but we only assert the response is valid JSON
 # and includes either a tool_use block or a text block — i.e. the
 # transport works.
-payload=$(cat <<EOF
+payload=$(
+  cat << EOF
 {
   "model": "$MODEL",
   "stream": false,
@@ -45,7 +46,7 @@ EOF
 )
 
 resp=$(curl -fsS -X POST -H 'content-type: application/json' \
-  -d "$payload" "$ENDPOINT/api/chat" 2>/dev/null || true)
+  -d "$payload" "$ENDPOINT/api/chat" 2> /dev/null || true)
 
 if [ -z "$resp" ]; then
   echo "[err ] no response from $ENDPOINT/api/chat" >&2
@@ -54,7 +55,7 @@ fi
 
 # Must contain a message with role=assistant.
 case "$resp" in
-  *'"role":"assistant"'*|*'"role": "assistant"'*)
+  *'"role":"assistant"'* | *'"role": "assistant"'*)
     echo "[ ok ] tool-call probe round-trip succeeded against $MODEL"
     exit 0
     ;;
