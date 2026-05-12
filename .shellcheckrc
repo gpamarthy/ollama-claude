@@ -1,0 +1,10 @@
+# SC1091: Not following: ... was not specified as input
+# Our scripts use a dynamic OC_LIB_DIR resolved at runtime; shellcheck
+# can't statically follow those sourced paths. The runtime resolution
+# is correct and exercised by the bats unit tests.
+disable=SC1091
+
+# SC2015: Note that A && B || C is not if-then-else
+# We use this pattern intentionally in a few places for terse error
+# handling where C is also a safe no-op (e.g. logging).
+disable=SC2015
