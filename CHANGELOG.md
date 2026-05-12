@@ -4,21 +4,33 @@ All notable changes to ollama-claude are documented here. Format follows [Keep a
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-05-12
+
+First public release. Phase 1 shell-script MVP.
+
 ### Added
-- Initial Phase 1 shell-script scaffolding
 - `oc install / init / sync / status / doctor / models / topology / switch / wire-up / claude-hooks / benchmark / self-update / uninstall / version` subcommands
-- Hardware-tier autopilot for NVIDIA, AMD, Apple Silicon, Intel iGPU/Arc, CPU-only
+- Hardware-tier autopilot for NVIDIA, AMD ROCm, Apple Metal, Intel iGPU/Arc, CPU-only, WSL2
+- Five hardware tiers (`cpu`, `low`, `mid`, `high`, `workstation`) chosen from effective VRAM and total RAM
 - Same-machine and split (host/client) topology presets
-- Layered TOML config: built-in defaults → global → profile → project → env vars
+- Layered TOML config: built-in defaults, global, profile, project, env vars
 - Profile bundles: `default`, `security-research`, `data-science`, `web-dev`, `minimalist`, `team`
 - Claude Code session-backend audit hook (opt-in)
-- Unit tests with mocked CLI fixtures (`bats-core`)
-- Integration smoke against real Ollama on Linux runners
 - AMD `HSA_OVERRIDE_GFX_VERSION` chip table
+- PowerShell mirror of `install`, `status`, `doctor`, `switch`, `wire-up`, `version`
+- 18 bats unit + contract tests, 50-iteration property test, integration smoke
+- `oc --version` / `oc -V` aliases for `oc version`
+- `oc doctor` reports warnings separately from failures; clean install with no models pulled exits 0
+- `oc models set` overrides honoured by the resolver
+- Pre-existing Ollama install detection is logged explicitly
+- `oc switch` and `oc status` show both the env-file intent and the current-shell state
+- CI matrix (Ubuntu, macOS, Windows) and nightly distro-container matrix
 
-## [0.1.0] - TBD
-
-First public release. See README for what works.
+### Known limitations
+- Phase 2 Go binary not yet started; `install.sh` runs shell scripts directly
+- macOS launchd plist not yet tested on a real Apple Silicon box
+- AMD `HSA_OVERRIDE_GFX_VERSION` table needs PRs to cover more chips
+- `oc self-update` is a stub until releases exist
 
 [Unreleased]: https://github.com/gpamarthy/ollama-claude/compare/v0.1.0...HEAD
 [0.1.0]: https://github.com/gpamarthy/ollama-claude/releases/tag/v0.1.0
