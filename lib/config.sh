@@ -50,34 +50,46 @@ oc_toml_get() {
 # Resolve the role->tag for a tier from models.toml, walking one row
 # down on miss. Empty string ("") is treated as "intentionally skipped"
 # and returned as-is.
+#
+# Resolution order:
+#   1. User override in ~/.config/ollama-claude/config.toml [overrides]
+#   2. Tier-specific tag from models.toml
+#   3. Walk down to lower tiers
+#   4. Last-resort fallback.tag
 oc_resolve_model() {
   models_file="$1"
   tier="$2"
   role="$3"
 
-  # tiers in resolution order (down-walk on miss)
-  set -- workstation high mid low cpu
+  # 1. User override wins
+  user_cfg="$(oc_config_home)/config.toml"
+  if [ -r "$user_cfg" ]; then
+    override=$(oc_toml_get "$user_cfg" "overrides.$role" 2>/dev/null || true)
+    if [ -n "${override:-}" ]; then
+      printf '%s' "$override"
+      return 0
+    fi
+  fi
+
+  # 2-3. Tier-specific, walking down
   found_tier=0
   for t in workstation high mid low cpu; do
     if [ "$t" = "$tier" ]; then
       found_tier=1
     fi
     if [ "$found_tier" = "1" ]; then
-      val=$(oc_toml_get "$models_file" "tier.$t.$role" 2>/dev/null || echo "")
-      if [ -n "${val+x}" ]; then
-        # Explicit empty value: respect (skip role for this tier)
-        if [ -z "$val" ]; then
-          printf ''
-          return 0
-        fi
-        # Non-empty: return
+      val=$(oc_toml_get "$models_file" "tier.$t.$role" 2>/dev/null || true)
+      # If the key exists at all, the awk script either prints a value
+      # or prints empty (for `key = ""`). Distinguish "key exists, empty"
+      # from "key not found" by checking the awk exit code path.
+      if oc_toml_get "$models_file" "tier.$t.$role" >/dev/null 2>&1; then
         printf '%s' "$val"
         return 0
       fi
     fi
   done
 
-  # Last-resort fallback
+  # 4. Last-resort fallback
   oc_toml_get "$models_file" "fallback.tag"
 }
 

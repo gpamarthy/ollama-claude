@@ -48,5 +48,6 @@ oc_cmd_status() {
 
   printf '\nClaude Code\n'
   printf '  Wire-up state:     %s\n' "$(oc_claude_wireup_state)"
-  printf '  Switch state:      %s\n' "$(oc_claude_switch_state)"
+  printf '  Env file says:     %s\n' "$(oc_claude_file_state)"
+  printf '  Current shell:     %s\n' "$(oc_claude_switch_state)"
 }

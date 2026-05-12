@@ -58,7 +58,8 @@ oc_cmd_install() {
 
   # Existing-install detection (plan §8.5)
   if _existing_install_present; then
-    if ! oc_confirm "Pre-existing Ollama install detected. Keep & supplement?" yes; then
+    oc_log info "pre-existing Ollama install detected — keeping & supplementing (no overwrite)"
+    if ! oc_confirm "Continue?" yes; then
       oc_log warn "aborting per user choice"
       return 1
     fi

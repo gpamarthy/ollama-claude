@@ -26,7 +26,12 @@ EOF
 
 oc_cmd_switch() {
   if [ $# -eq 0 ]; then
-    printf 'switch state: %s\n' "$(oc_claude_switch_state)"
+    printf 'env file says:  %s\n' "$(oc_claude_file_state)"
+    printf 'current shell:  %s\n' "$(oc_claude_switch_state)"
+    if [ "$(oc_claude_file_state)" != "$(oc_claude_switch_state)" ]; then
+      printf '\nThe file and your shell disagree. Source the env file to apply:\n'
+      printf '  source %s/claude-code.env\n' "$(oc_config_home)"
+    fi
     return 0
   fi
 

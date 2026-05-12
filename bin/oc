@@ -67,12 +67,13 @@ EOF
 # Parse global flags
 while [ $# -gt 0 ]; do
   case "$1" in
-    -v|--verbose) export OC_VERBOSE=1; shift ;;
-    -q|--quiet)   export OC_QUIET=1; shift ;;
-    -h|--help)    usage; exit 0 ;;
-    --)           shift; break ;;
-    -*)           oc_log error "unknown global flag: $1"; usage >&2; exit 2 ;;
-    *)            break ;;
+    -v|--verbose)  export OC_VERBOSE=1; shift ;;
+    -q|--quiet)    export OC_QUIET=1; shift ;;
+    -V|--version)  set -- version; break ;;
+    -h|--help)     usage; exit 0 ;;
+    --)            shift; break ;;
+    -*)            oc_log error "unknown global flag: $1"; usage >&2; exit 2 ;;
+    *)             break ;;
   esac
 done
 

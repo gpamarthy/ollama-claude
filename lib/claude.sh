@@ -46,13 +46,32 @@ oc_claude_wireup_state() {
   printf 'sourced'
 }
 
-# Determine "switch state": local | cloud | unknown
+# Determine current "switch state" from the shell environment.
+# local | cloud
 oc_claude_switch_state() {
-  # We can only inspect what's exported in the parent shell. Best effort:
-  # if claude-code.env has been sourced and ANTHROPIC_BASE_URL is set to
-  # our value, we're local. Otherwise unknown.
   if [ -n "${ANTHROPIC_BASE_URL:-}" ]; then
     case "$ANTHROPIC_BASE_URL" in
+      *127.0.0.1*|*localhost*) printf 'local' ;;
+      *) printf 'cloud' ;;
+    esac
+  else
+    printf 'cloud'
+  fi
+}
+
+# Determine the *intended* switch state from the env file on disk.
+# This is what the user gets after they next source the file or restart
+# Claude Code. Useful right after `oc switch <mode>` to confirm the file
+# was rewritten without needing to re-source.
+oc_claude_file_state() {
+  env_file="$(oc_config_home)/claude-code.env"
+  if [ ! -r "$env_file" ]; then
+    printf 'no-env-file'
+    return 0
+  fi
+  if grep -qE '^export ANTHROPIC_BASE_URL=' "$env_file" 2>/dev/null; then
+    base=$(awk -F'"' '/^export ANTHROPIC_BASE_URL=/ {print $2; exit}' "$env_file")
+    case "$base" in
       *127.0.0.1*|*localhost*) printf 'local' ;;
       *) printf 'cloud' ;;
     esac

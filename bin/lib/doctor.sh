@@ -16,6 +16,7 @@
 
 oc_cmd_doctor() {
   fail=0
+  warn=0
   oc_run_hook pre-doctor
 
   oc_log step "Hardware detection"
@@ -34,6 +35,7 @@ oc_cmd_doctor() {
       oc_log ok  "version >= $OLLAMA_MIN_VERSION (Anthropic-compatible endpoint supported)"
     else
       oc_log warn "version below $OLLAMA_MIN_VERSION; upgrade for Anthropic-compatible endpoint"
+      warn=$((warn + 1))
     fi
     if oc_ollama_ping "127.0.0.1:11434"; then
       oc_log ok "service reachable on 127.0.0.1:11434"
@@ -52,8 +54,9 @@ oc_cmd_doctor() {
       continue
     fi
     if ! oc_ollama_tag_present_locally "$tag"; then
-      oc_log warn "model not pulled: $tag (run: ollama pull $tag)"
-      fail=$((fail + 1))
+      # Not pulled yet is a remediation suggestion, not a failure.
+      oc_log warn "role '$role': $tag not pulled (run: ollama pull $tag — or: oc install)"
+      warn=$((warn + 1))
       continue
     fi
     if _probe_inference "$tag"; then
@@ -68,13 +71,17 @@ oc_cmd_doctor() {
   printf '  state: %s\n' "$(oc_claude_wireup_state)"
   printf '  switch: %s\n' "$(oc_claude_switch_state)"
 
-  OC_DOCTOR_FAIL="$fail" oc_run_hook post-doctor
+  OC_DOCTOR_FAIL="$fail" OC_DOCTOR_WARN="$warn" oc_run_hook post-doctor
 
-  if [ "$fail" -eq 0 ]; then
+  printf '\n'
+  if [ "$fail" -eq 0 ] && [ "$warn" -eq 0 ]; then
     oc_log ok "doctor: all checks passed"
     return 0
+  elif [ "$fail" -eq 0 ]; then
+    oc_log ok "doctor: $warn warning(s), no failures"
+    return 0
   else
-    oc_log error "doctor: $fail check(s) failed"
+    oc_log error "doctor: $fail failure(s), $warn warning(s)"
     return 1
   fi
 }
