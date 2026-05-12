@@ -3,7 +3,7 @@
 
 set -eu
 
-OC_VERSION="0.1.0-dev"
+OC_VERSION="0.1.1"
 
 # Resolve our own location so subcommands can find lib/ and config/.
 # Handle symlinks (the installer puts oc in ~/.local/bin pointing at a

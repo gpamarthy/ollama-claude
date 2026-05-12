@@ -135,13 +135,20 @@ _oc_amd_override_for() {
 
 oc_detect_gpu_apple() {
   [ "$OC_OS" = "macos" ] || return 1
+  # Must actually be able to probe Apple hardware, not just be on macos.
+  # This makes the function mockable from PATH-overridden test harnesses
+  # (hide system_profiler -> apple detection fails -> falls through to CPU).
+  command -v system_profiler >/dev/null 2>&1 || return 1
+  hw=$(system_profiler SPHardwareDataType 2>/dev/null) || return 1
+  case "$hw" in
+    *"Chip:"*Apple*|*"Apple M"*|*"Apple Silicon"*) : ;;
+    *) return 1 ;;
+  esac
+
   OC_GPU_VENDOR="apple_metal"
   # Unified memory: effective VRAM ≈ 75% of total RAM
   OC_VRAM_GB=$((OC_RAM_GB * 75 / 100))
-  # Fanless models (M-series Air) get a thermal-throttle flag
-  if system_profiler SPHardwareDataType 2>/dev/null | grep -qi 'MacBook Air'; then
-    OC_FANLESS=1
-  fi
+  case "$hw" in *"MacBook Air"*) OC_FANLESS=1 ;; esac
   return 0
 }
 

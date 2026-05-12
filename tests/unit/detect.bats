@@ -85,6 +85,9 @@ setup() {
   hide_cmd nvidia-smi
   hide_cmd rocm-smi
   hide_cmd vulkaninfo
+  # On macOS runners, oc_detect_gpu_apple would otherwise succeed because
+  # the runner is real Apple Silicon. Hide its probe to simulate "no GPU".
+  hide_cmd system_profiler
 
   oc_detect_os
   OC_RAM_GB=8

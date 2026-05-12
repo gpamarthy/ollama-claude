@@ -4,6 +4,14 @@ All notable changes to ollama-claude are documented here. Format follows [Keep a
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-05-12
+
+### Fixed
+- CI: pinned `shfmt` download URL so it stops 404-ing on the version-bearing asset
+- CI: PowerShell `Invoke-ScriptAnalyzer` now loops over files instead of passing an array to `-Path`
+- `lib/detect.sh`: `oc_detect_gpu_apple` actually probes `system_profiler` instead of claiming success on every Darwin host, so PATH-mocked tests can simulate "no GPU" on macOS runners
+- `bin/oc`: `OC_VERSION` bumped to `0.1.1` (was `0.1.0-dev`)
+
 ## [0.1.0] - 2026-05-12
 
 First public release. Phase 1 shell-script MVP.
@@ -32,5 +40,6 @@ First public release. Phase 1 shell-script MVP.
 - AMD `HSA_OVERRIDE_GFX_VERSION` table needs PRs to cover more chips
 - `oc self-update` is a stub until releases exist
 
-[Unreleased]: https://github.com/gpamarthy/ollama-claude/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/gpamarthy/ollama-claude/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/gpamarthy/ollama-claude/releases/tag/v0.1.1
 [0.1.0]: https://github.com/gpamarthy/ollama-claude/releases/tag/v0.1.0
